@@ -1,0 +1,5 @@
+Where is the maven bundled with IntelliJ?
+like:
+alias mvn="/Applications/IntelliJ IDEA 2.app/Contents/plugins/maven/lib/maven3/bin/mvn"
+
+mvn archetype:generate -DgroupId=benblamey -DartifactId=stream-worker -DinteractiveMode=false

@@ -1,0 +1,4 @@
+out
+stream-worker2/build/**
+.DS_Store
+.gradle

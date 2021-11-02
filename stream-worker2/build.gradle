@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'benblamey.Hello'
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+
+//task copyJarToDockerDir(type: Copy) {
+//    from "$buildDir/libs"
+//    include "**/*.jar"
+//    into "$buildDir/docker"
+//}
+
+//task prepareDockerDir(type: Copy) {
+//    from "$projectDir/docker"
+//    include "**/*"
+//    filter { it.replaceAll('<%=name%>', project.name) } // makes Dockerfile more generic
+//    into "$buildDir/docker"
+//}
+
+task buildDockerImage(type:Exec) {
+    workingDir "$projectDir"
+    //project.logger.info('my debug message')
+    //project.logger.info("$projectDir")
+    commandLine "docker", "build", "-t", "${project.name}",  "."
+}
+
+//task pushDockerImage(type: Exec) {
+//    commandLine "docker", "push", "maniekq/${project.name}:${project.version}"
+//}
+
+//copyJarToDockerDir.dependsOn build
+//buildDockerImage.dependsOn prepareDockerDir
+buildDockerImage.dependsOn jar
+//build.dependsOn buildDockerImage
+//pushDockerImage.dependsOn buildDockerImage
+
+
+test {
+    useJUnitPlatform()
+}
