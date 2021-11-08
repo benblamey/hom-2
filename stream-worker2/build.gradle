@@ -25,39 +25,45 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    // https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
+    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '3.0.0'
+
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    // This one just puts the output in the cosole.
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
 }
 
 
-//task copyJarToDockerDir(type: Copy) {
-//    from "$buildDir/libs"
-//    include "**/*.jar"
-//    into "$buildDir/docker"
-//}
-
-//task prepareDockerDir(type: Copy) {
-//    from "$projectDir/docker"
-//    include "**/*"
-//    filter { it.replaceAll('<%=name%>', project.name) } // makes Dockerfile more generic
-//    into "$buildDir/docker"
-//}
+// Create a fat JAR to use with Docker, by overriding the default configuration for 'jar':
+jar {
+    manifest {
+        attributes "Main-Class": "benblamey.Hello"
+    }
+    setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    System.out.println(configurations.runtimeClasspath)
+    from {
+        // zipTree - Creates a new FileTree which contains the contents of the given ZIP file. The given zipPath path is evaluated as per file(Object).
+        // You can combine this method with the copy(groovy.lang.Closure) method to unzip a ZIP file.
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
 
 task buildDockerImage(type:Exec) {
     workingDir "$projectDir"
     //project.logger.info('my debug message')
     //project.logger.info("$projectDir")
+    errorOutput(System.out)
+    System.out.println("${project.name}")
+
     commandLine "docker", "build", "-t", "${project.name}",  "."
 }
-
-//task pushDockerImage(type: Exec) {
-//    commandLine "docker", "push", "maniekq/${project.name}:${project.version}"
-//}
-
-//copyJarToDockerDir.dependsOn build
-//buildDockerImage.dependsOn prepareDockerDir
 buildDockerImage.dependsOn jar
-//build.dependsOn buildDockerImage
-//pushDockerImage.dependsOn buildDockerImage
-
 
 test {
     useJUnitPlatform()

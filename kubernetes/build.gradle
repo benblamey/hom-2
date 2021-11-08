@@ -1,0 +1,21 @@
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+task undeployK8(type:Exec) {
+    workingDir "$projectDir"
+    commandLine "kubectl","delete","pod","kafka"
+    commandLine "kubectl","delete","pod","stream-worker2"
+}
+
+task deployK8(type:Exec) {
+    workingDir "$projectDir"
+    errorOutput(System.out)
+
+    // kubectl apply -f haste-k8.yaml
+    commandLine "kubectl","apply","-f","haste-k8.yaml"
+
+    // forward the port from localhost for dev purposes
+    // note: seems like this needs to be done again if the pod is restared.
+    //kubectl port-forward pods/kafka 19092:19092
+    commandLine "kubectl","port-forward","pods/kafka","19092:19092"
+}

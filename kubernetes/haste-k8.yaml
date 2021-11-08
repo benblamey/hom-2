@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kafka
+  labels:
+    # This is used for the service "selector".
+    app: kafka
+spec:
+  containers:
+  - image: haste-o-matic-impl-2.kafka
+    imagePullPolicy: Never
+    name: kafka
+    volumeMounts:
+    - mountPath: /tmp/kafka-logs
+      name: dev-data-volume
+  volumes:
+  - name: dev-data-volume
+    hostPath:
+      # dev purpose - location on host
+      path: /Users/benblamey/projects/github-me/haste-o-matic-impl-2/kafka/data
+      type: Directory
+  restartPolicy: Always
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+spec:
+  selector:
+    # This matches the label for the pods above.
+    app: kafka
+  ports:
+    # note: for dev connections from the host outside k8, we use port forwarding direct to the pod.
+
+    - name: kafka-b
+      protocol: TCP
+      port: 9092
+      targetPort: 9092
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: stream-worker2
+  labels:
+    # This is used for the service "selector".
+    app: stream-worker2
+spec:
+  containers:
+  - image: haste-o-matic-impl-2.stream-worker2
+    imagePullPolicy: Never
+    name: stream-worker2
+  restartPolicy: Always

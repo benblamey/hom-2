@@ -1,6 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="stream-worker2:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/stream_worker2_jar</output-path>
-    <root id="archive" name="stream-worker.jar" />
-  </artifact>
-</component>
