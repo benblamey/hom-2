@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+// Create a fat JAR to use with Docker, by overriding the default configuration for 'jar':
+jar {
+    manifest {
+        attributes "Main-Class": "benblamey.Hello"
+    }
+    setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    System.out.println(configurations.runtimeClasspath)
+    from {
+        // zipTree - Creates a new FileTree which contains the contents of the given ZIP file. The given zipPath path is evaluated as per file(Object).
+        // You can combine this method with the copy(groovy.lang.Closure) method to unzip a ZIP file.
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+
+task buildDockerImage(type:Exec) {
+    workingDir "$projectDir"
+    //project.logger.info('my debug message')
+    //project.logger.info("$projectDir")
+    errorOutput(System.out)
+    System.out.println("${project.name}")
+
+    commandLine "docker", "build", "-t", "${project.name}",  "."
+}
+buildDockerImage.dependsOn jar
+
+
+test {
+    useJUnitPlatform()
+}

@@ -1,5 +1,5 @@
 out
-stream-worker2/build/**
+**/build/**
 .DS_Store
 .gradle
 kafka/data/**

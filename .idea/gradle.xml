@@ -26,6 +26,17 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/manager" />
+        <option name="gradleHome" value="/usr/local/Cellar/gradle/4.9" />
+        <option name="gradleJvm" value="16" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/manager" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="delegatedBuild" value="true" />
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />

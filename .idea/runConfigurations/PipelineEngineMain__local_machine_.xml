@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PipelineEngineMain (local machine)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.benblamey.hom.engine.PipelineEngineMain" />
+    <module name="hom-impl-2.stream-worker2.main" />
+    <option name="VM_PARAMETERS" value="-DKAFKA_BOOTSTRAP_SERVER=localhost:19092 -DKAFKA_APPLICATION_ID=app-hom-tier-2 -DINPUT_TOPIC=haste-input-data -DOUTPUT_TOPIC=hom-tier-2 -DJEXL_EXPRESSION=&quot;data.foo &gt; 42&quot;" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.benblamey.hom.demodata.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

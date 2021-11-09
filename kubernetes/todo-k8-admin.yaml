@@ -1,0 +1,49 @@
+
+
+# on the dev machine, admin access seems to work as-is, but will probs need something like this for a k8 cluster.
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: spinupcontainers
+subjects:
+- kind: ServiceAccount
+  name: spinupcontainers
+  #namespace: <YOUR_NAMESPACE>
+roleRef:
+  kind: Role
+  name: spinupcontainers
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: spinupcontainers
+  # "namespace" omitted if was ClusterRoles because are not namespaced
+  #namespace: <YOUR_NAMESPACE>
+  labels:
+    k8s-app: hom-manager
+rules:
+#
+# Give here only the privileges you need
+#
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs:
+  - create
+  - update
+  - patch
+  - delete
+  - get
+  - watch
+  - list
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spinupcontainers
+  #namespace: <MY_NAMESPACE>
+  labels:
+    k8s-app: hom-manager
+---

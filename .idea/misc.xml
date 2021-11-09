@@ -5,6 +5,7 @@
     <file type="web" url="file://$PROJECT_DIR$/kafka" />
     <file type="web" url="file://$PROJECT_DIR$/kafka/kubernetes" />
     <file type="web" url="file://$PROJECT_DIR$/kubernetes" />
+    <file type="web" url="file://$PROJECT_DIR$/manager" />
     <file type="web" url="file://$PROJECT_DIR$/stream-worker" />
     <file type="web" url="file://$PROJECT_DIR$/stream-worker2" />
   </component>
