@@ -43,16 +43,3 @@ spec:
 
 ---
 
-apiVersion: v1
-kind: Pod
-metadata:
-  name: stream-worker2
-  labels:
-    # This is used for the service "selector".
-    app: stream-worker2
-spec:
-  containers:
-  - image: hom-impl-2.stream-worker2
-    imagePullPolicy: Never
-    name: stream-worker2
-  restartPolicy: Always
