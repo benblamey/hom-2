@@ -1,19 +1,19 @@
-package com.benblamey.haste.demodata;
+package com.benblamey.hom.demodata;
 
 import java.util.concurrent.CountDownLatch;
 
-public class HasteDemoDataMain {
+public class DemoDataMain {
 
     public static void main(String[] args) throws InterruptedException {
         String all_args = String.join(" ", args);
-        System.out.println(HasteDemoDataMain.class.getName()+" args:" + all_args);
+        System.out.println(DemoDataMain.class.getName()+" args:" + all_args);
 
-        HasteDemoDataProducer producer = new HasteDemoDataProducer();
+        DemoDataProducer producer = new DemoDataProducer();
         producer.start();
 
         // attach shutdown handler to catch control-c
         CountDownLatch shutdownLatch = new CountDownLatch(1);
-        Runtime.getRuntime().addShutdownHook(new Thread("haste-backend-shutdown-hook") {
+        Runtime.getRuntime().addShutdownHook(new Thread("shutdown-hook") {
             @Override
             public void run() {
                 shutdownLatch.countDown();

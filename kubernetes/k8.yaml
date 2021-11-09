@@ -8,7 +8,8 @@ metadata:
     app: kafka
 spec:
   containers:
-  - image: haste-o-matic-impl-2.kafka
+  - image: hom-impl-2.kafka
+    # image is local-only atm.
     imagePullPolicy: Never
     name: kafka
     volumeMounts:
@@ -18,7 +19,7 @@ spec:
   - name: dev-data-volume
     hostPath:
       # dev purpose - location on host
-      path: /Users/benblamey/projects/github-me/haste-o-matic-impl-2/kafka/data
+      path: /Users/benblamey/projects/github-me/hom-impl-2/kafka/data
       type: Directory
   restartPolicy: Always
   
@@ -51,7 +52,7 @@ metadata:
     app: stream-worker2
 spec:
   containers:
-  - image: haste-o-matic-impl-2.stream-worker2
+  - image: hom-impl-2.stream-worker2
     imagePullPolicy: Never
     name: stream-worker2
   restartPolicy: Always

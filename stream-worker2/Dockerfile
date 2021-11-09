@@ -1,6 +1,6 @@
 FROM openjdk:17-jdk
 
-COPY build/libs/haste-o-matic-impl-2.stream-worker2-1.0-SNAPSHOT.jar output.jar
+COPY build/libs/hom-impl-2.stream-worker2-1.0-SNAPSHOT.jar output.jar
 
 
 # ENTRYPOINT ["java","-jar","output.jar"]

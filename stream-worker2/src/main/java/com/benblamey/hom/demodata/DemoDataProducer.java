@@ -1,6 +1,6 @@
-package com.benblamey.haste.demodata;
+package com.benblamey.hom.demodata;
 
-import com.benblamey.haste.CommandLineArguments;
+import com.benblamey.hom.CommandLineArguments;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -9,7 +9,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-public class HasteDemoDataProducer  {
+public class DemoDataProducer {
 
     public static final String INPUT_TOPIC = "haste-input-data";
     private static final int NUM_OF_MESSAGES = 500;

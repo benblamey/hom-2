@@ -2,7 +2,7 @@
   <artifact type="jar" build-on-make="true" name="haste-o-matic-impl-2.stream-worker2.main:jar">
     <output-path>$PROJECT_DIR$/stream-worker2/build</output-path>
     <root id="archive" name="haste-o-matic-impl-2.stream-worker2.main.jar">
-      <element id="module-output" name="haste-o-matic-impl-2.stream-worker2.main" />
+      <element id="module-output" name="hom-impl-2.stream-worker2.main" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.10/e4f1766ce7404a08f45d859fb9c226fc9e41a861/junit-4.10.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.lz4/lz4-java/1.7.1/c4d931ef8ad2c9c35d65b231a33e61428472d0da/lz4-java-1.7.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.30/b5a4b6d16ab13e34a88fae84c35cd5d68cac922c/slf4j-api-1.7.30.jar" path-in-jar="/" />
