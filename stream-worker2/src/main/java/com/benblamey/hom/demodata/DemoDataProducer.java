@@ -13,6 +13,7 @@ public class DemoDataProducer {
 
     public static final String INPUT_TOPIC = "haste-input-data";
     private static final int NUM_OF_MESSAGES = 500;
+
     private Thread m_producerThread;
     private boolean m_stopProducerThread = false;
 

@@ -1,11 +1,15 @@
 package com.benblamey.hom.manager;
 
+import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class Offsets {
-    public static class OffsetInfo {
+    public static class OffsetInfo implements JSONAware {
         public OffsetInfo(List<String> parts) {
             // Parse output from kafka-consumer-groups.sh
             this.GROUP_TOPIC = parts.get(0);
@@ -26,9 +30,22 @@ public class Offsets {
         String CONSUMER_ID;
         String HOST;
         String CLIENT_ID;
+
+        @Override
+        public String toJSONString() {
+            return JSONObject.toJSONString(
+                    Map.of("GROUP_TOPIC", this.GROUP_TOPIC,
+                            "PARTITION", this.PARTITION,
+                            "CURRENT_OFFSET", this.CURRENT_OFFSET,
+                            "LOG_END_OFFSET", this.LOG_END_OFFSET,
+                            "LAG", this.LAG,
+                            "CONSUMER_ID", this.CONSUMER_ID,
+                            "HOST", this.HOST,
+                            "CLIENT_ID", this.CLIENT_ID));
+        }
     }
 
-    private static List<OffsetInfo> fetchOffsets() {
+    static List<OffsetInfo> fetchOffsets() {
         String[] args = {
                 "/kafka_2.13-3.0.0/bin/kafka-consumer-groups.sh",
                 "--bootstrap-server",

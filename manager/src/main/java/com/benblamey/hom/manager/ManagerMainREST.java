@@ -57,8 +57,13 @@ public class ManagerMainREST {
             return json;
         });
 
-
-            // TODO: get the offsets
+        spark.Spark.get("/offsets", (req, res) -> {
+            logger.info("/offsets");
+            List<Offsets.OffsetInfo> offsetInfos = Offsets.fetchOffsets();
+            String json = JSONObject.toJSONString(Map.of("offsets",offsetInfos));
+            logger.debug(json);
+            return json;
+        });
 
         spark.Spark.awaitInitialization();
         logger.info("web server listening on http://0.0.0.0:" + spark.Spark.port() );
@@ -73,6 +78,5 @@ public class ManagerMainREST {
         logger.info("Cleaning up tiers...");
         manager.cleanup();
     }
-
 
 }

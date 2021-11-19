@@ -1,6 +1,6 @@
 kubectl config use-context docker-desktop
 
-kubectl delete pod kafka ; kubectl apply -f kubernetes/k8.yaml
+kubectl apply -f kubernetes/k8.yaml
 
 Stream demo data (and attach):
 kubectl delete pod demo-data ; kubectl run demo-data --image hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- java -cp output.jar -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain 
