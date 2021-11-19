@@ -12,20 +12,25 @@ public class Offsets {
     public static class OffsetInfo implements JSONAware {
         public OffsetInfo(List<String> parts) {
             // Parse output from kafka-consumer-groups.sh
-            this.GROUP_TOPIC = parts.get(0);
-            this.PARTITION = parts.get(1);
-            this.CURRENT_OFFSET = parts.get(2);
-            this.LOG_END_OFFSET = parts.get(3);
-            this.LAG = parts.get(4);
-            this.CONSUMER_ID = parts.get(5);
-            this.HOST = parts.get(5);
-            this.CLIENT_ID = parts.get(5);
+            this.GROUP = parts.get(0);
+            this.TOPIC = parts.get(1);
+            this.PARTITION = parts.get(2);
+
+            // -1 can signify that everything is parsed
+            this.CURRENT_OFFSET = parts.get(3).equals("-") ? -1 : Long.parseLong(parts.get(3));
+
+            this.LOG_END_OFFSET = parts.get(4).equals("-") ? -1 : Long.parseLong(parts.get(4));
+            this.LAG = parts.get(5);
+            this.CONSUMER_ID = parts.get(6);
+            this.HOST = parts.get(7);
+            this.CLIENT_ID = parts.get(8);
         }
 
-        String GROUP_TOPIC;
+        String GROUP;
+        String TOPIC;
         String PARTITION;
-        String CURRENT_OFFSET;
-        String LOG_END_OFFSET;
+        Long CURRENT_OFFSET;
+        long LOG_END_OFFSET;
         String LAG;
         String CONSUMER_ID;
         String HOST;
@@ -34,7 +39,8 @@ public class Offsets {
         @Override
         public String toJSONString() {
             return JSONObject.toJSONString(
-                    Map.of("GROUP_TOPIC", this.GROUP_TOPIC,
+                    Map.of("GROUP", this.GROUP,
+                            "TOPIC", this.TOPIC,
                             "PARTITION", this.PARTITION,
                             "CURRENT_OFFSET", this.CURRENT_OFFSET,
                             "LOG_END_OFFSET", this.LOG_END_OFFSET,

@@ -5,9 +5,11 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.BinaryOperator;
 
 public class ManagerMainREST {
 
@@ -43,15 +45,37 @@ public class ManagerMainREST {
 
         spark.Spark.post("/remove-tier", (req, res) -> {
             logger.info("/remove-tier");
-            manager.removeTier();
-            return true;
+            if (manager.getTiers().isEmpty()) {
+                return false;
+            }else{
+                manager.removeTier();
+                return true;
+            }
         });
 
         spark.Spark.get("/info", (req, res) -> {
             logger.info("/info");
             List<Manager.Tier> tiers = manager.getTiers();
+            List<Offsets.OffsetInfo> offsetInfos = Offsets.fetchOffsets();
+            List<Map> tierJsonMaps = new ArrayList<>();
 
-            Map<String, Object> tiers1 = Map.of("tiers", tiers);
+            for (Manager.Tier t : tiers) {
+                Long sumOfCurrentOffsets = 0L;
+                Long sumOfLogEndOffsets = 0L;
+                Map<String, Object> jsonMap = t.toMap();
+
+                for (Offsets.OffsetInfo oi : offsetInfos) {
+                    if (oi.GROUP.equals(t.kafkaApplicationID)) {
+                        sumOfCurrentOffsets += oi.CURRENT_OFFSET;
+                        sumOfLogEndOffsets += oi.LOG_END_OFFSET;
+                    }
+                }
+                jsonMap.put("SUM_OF_CURRENT_OFFSETS", sumOfCurrentOffsets);
+                jsonMap.put("SUM_OF_LOG_END_OFFSETS", sumOfLogEndOffsets);
+                tierJsonMaps.add(jsonMap);
+            }
+
+            Map<String, Object> tiers1 = Map.of("tiers", tierJsonMaps);
             String json = JSONObject.toJSONString(tiers1);
             logger.debug(json);
             return json;

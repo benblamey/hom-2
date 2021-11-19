@@ -41,8 +41,6 @@ public  class CommandLineArguments {
             throw new RuntimeException("JEXL_EXPRESSION is null.");
         }
 
-        Foo f = new Foo();
-
         System.out.println("JEXL_EXPRESSION is " + result);
         return result;
     }

@@ -5,14 +5,20 @@ import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class DemoDataProducer {
 
+    private static final Logger logger = LoggerFactory.getLogger(DemoDataProducer.class);
+
     public static final String INPUT_TOPIC = "haste-input-data";
-    private static final int NUM_OF_MESSAGES = 500;
+    private static final int NUM_OF_MESSAGES = 50000;
 
     private Thread m_producerThread;
     private boolean m_stopProducerThread = false;
@@ -46,11 +52,16 @@ public class DemoDataProducer {
 
                 final ProducerRecord<Long, String> record = new ProducerRecord<>(INPUT_TOPIC, index, obj.toJSONString());
                 // This is non-blocking.
-                RecordMetadata metadata = producer.send(record).get();
-                System.out.printf("sent record(key=%s value='%s')" + " metadata(partition=%d, offset=%d)\n",
-                        record.key(), record.value(), metadata.partition(), metadata.offset());
+                Future<RecordMetadata> send = producer.send(record);
 
-                Thread.sleep(100);
+                if (logger.isDebugEnabled()) {
+                    // This waits for completion...
+                    RecordMetadata metadata = send.get();
+                    logger.debug("sent record(key=%s value='%s')" + " metadata(partition=%d, offset=%d)\n",
+                            record.key(), record.value(), metadata.partition(), metadata.offset());
+                    Thread.sleep(100);
+                }
+
             }
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);

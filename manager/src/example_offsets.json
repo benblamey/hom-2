@@ -1,0 +1,24 @@
+{
+  "tiers": [
+    {
+      "outputTopic": "hom-topic-0-ec1a57b0-0200-4d9b-beae-d8453f95889b",
+      "jexlExpression": "data.foo > 5",
+      "SUM_OF_CURRENT_OFFSETS": 68705,
+      "uniqueTierId": "ec1a57b0-0200-4d9b-beae-d8453f95889b",
+      "inputTopic": "haste-input-data",
+      "SUM_OF_LOG_END_OFFSETS": 142843,
+      "kafkaApplicationID": "app-hom-tier-0-ec1a57b0-0200-4d9b-beae-d8453f95889b",
+      "friendlyTierId": "0"
+    },
+    {
+      "outputTopic": "hom-topic-1-369af139-38ff-45b1-b1ad-c328b9ca40f1",
+      "jexlExpression": "data.foo > 5",
+      "SUM_OF_CURRENT_OFFSETS": 71371,
+      "uniqueTierId": "369af139-38ff-45b1-b1ad-c328b9ca40f1",
+      "inputTopic": "hom-topic-0-ec1a57b0-0200-4d9b-beae-d8453f95889b",
+      "SUM_OF_LOG_END_OFFSETS": 97230,
+      "kafkaApplicationID": "app-hom-tier-1-369af139-38ff-45b1-b1ad-c328b9ca40f1",
+      "friendlyTierId": "1"
+    }
+  ]
+}

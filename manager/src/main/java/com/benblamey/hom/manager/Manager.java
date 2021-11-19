@@ -1,31 +1,35 @@
 package com.benblamey.hom.manager;
 
-import org.json.simple.JSONAware;
-
 import java.io.IOException;
 import java.util.*;
 
 public class Manager {
 
+    // Increasing this will probably break the code where we count up the offsets.
+    // Assumes only 1 partition.
+    private static final int WORKERS_PER_CONTAINER_TIER = 1;
+
     public List<Tier> getTiers() {
         return m_tiers;
     }
 
-    public class Tier implements JSONAware {
-        String friendlyTierId = "friendlyTierId"; // Friendly. Doesn't need to be unique
-        String jexlExpression = "jexlExpression";
-        String uniqueTierId = "uniqueTierId";
-        String inputTopic = "inputTopic";
-        String outputTopic = "outputTopic";
+    public class Tier  {
+        String friendlyTierId; // Friendly. Doesn't need to be unique
+        String jexlExpression;
+        String uniqueTierId;
+        String inputTopic;
+        String outputTopic;
+        String kafkaApplicationID;
 
-        @Override
-        public String toJSONString() {
-            return org.json.simple.JSONObject.toJSONString(Map.of(
+        public Map<String, Object> toMap() {
+            // return a mutable map
+            return new HashMap(Map.of(
                     "friendlyTierId", this.friendlyTierId, // Friendly. Doesn't need to be unique
                     "jexlExpression", this.jexlExpression,
                     "uniqueTierId", this.uniqueTierId,
                     "inputTopic", this.inputTopic,
-                    "outputTopic", this.outputTopic
+                    "outputTopic", this.outputTopic,
+                    "kafkaApplicationID", this.kafkaApplicationID
             ));
         }
     }
@@ -65,9 +69,10 @@ public class Manager {
         tier.uniqueTierId = generateUniqueTierID();
         tier.inputTopic = m_tiers.isEmpty() ? "haste-input-data" : m_tiers.get(m_tiers.size() - 1).outputTopic;
         tier.outputTopic = "hom-topic-" + tier.friendlyTierId + "-" + tier.uniqueTierId;
+        tier.kafkaApplicationID = "app-hom-tier-" + tier.friendlyTierId + "-" + tier.uniqueTierId;
         m_tiers.add(tier);
 
-        for (int index = 0; index < 3; index++) {
+        for (int index = 0; index < WORKERS_PER_CONTAINER_TIER; index++) {
             String[] args = {
                     "kubectl",
                     "run",
@@ -86,7 +91,7 @@ public class Manager {
                     "-DKAFKA_BOOTSTRAP_SERVER=" + CommandLineArguments.getKafkaBootstrapServerConfig(),
                     //"-DKAFKA_BOOTSTRAP_SERVER=localhost:19092",
                     // Stream ID used within Kafka
-                    "-DKAFKA_APPLICATION_ID=app-hom-tier-" + tier.friendlyTierId + "-" + tier.uniqueTierId,
+                    "-DKAFKA_APPLICATION_ID="+tier.kafkaApplicationID,
                     "-DINPUT_TOPIC=" + tier.inputTopic,
                     "-DOUTPUT_TOPIC=" + tier.outputTopic,
                     "-DJEXL_EXPRESSION=" + tier.jexlExpression,
