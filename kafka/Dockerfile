@@ -34,11 +34,13 @@ COPY log4j.properties config/log4j.properties
 
 # Separate issue. Need to clear meta.properties file, line: cluster.id=xxxx, see:
 # https://stackoverflow.com/questions/59592518/kafka-broker-doesnt-find-cluster-id-and-creates-new-one-after-docker-restart
-# Hence, sed '/^cluster/d' data/meta.properties
+# Hence the sed
 # || true so we don't abort on failure (on first time)
 # (TODO:) With this fix we are running a single zookeeper/kafka instance.
 
 # ALICE for connections from within other Kafka pods.
 # BOB for localhost connections from the host machine (outside kafka)
 
+# This starts both Zookeeper and Kafka. In the YAML we override this and start separate containers for each.
+# That way if a process dies, the pod is restarted.
 CMD ["bash","-ec","{ sed '/^cluster/d' data/meta.properties || true ; ./bin/zookeeper-server-start.sh config/zookeeper.properties; } & { sleep 20 ; ./bin/kafka-server-start.sh config/server.properties --override listeners=ALICE://0.0.0.0:9092,BOB://0.0.0.0:19092 --override advertised.listeners=ALICE://kafka-service:9092,BOB://localhost:19092 --override listener.security.protocol.map=ALICE:PLAINTEXT,BOB:PLAINTEXT --override inter.broker.listener.name=ALICE --override auto.create.topics.enable=true; }"]

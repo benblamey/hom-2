@@ -18,9 +18,14 @@ RUN apt update ; echo 'editthistoforcerun'
 # install curl
 RUN apt install -y curl
 
-# install Oracle JDK 17
-RUN curl -LO https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.deb
-RUN apt install -y ./jdk-17_linux-x64_bin.deb
+RUN apt install -y openjdk-16-jre
+
+# fix so that we can find java
+RUN java --version
+
+RUN curl -O https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz
+RUN tar -xzf kafka_2.13-3.0.0.tgz
+# /kafka_2.13-3.0.0
 
 # install kubectl, instructions from kubernetes website
 #RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -28,9 +33,8 @@ RUN curl -LO "https://dl.k8s.io/release/v1.22.3/bin/linux/amd64/kubectl"
 RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 RUN kubectl version --client
 
+COPY build/libs/hom-impl-2.manager-1.0-SNAPSHOT.jar output.jar
 
-#COPY build/libs/hom-impl-2.manager-1.0-SNAPSHOT.jar output.jar
-
+# /usr/lib/jvm/jdk-17/bin/java -cp output.jar com.benblamey.hom.manager.ManagerMainTest
 #ENTRYPOINT ["java","-jar","output.jar"]
 ENTRYPOINT ["/bin/bash"]
-

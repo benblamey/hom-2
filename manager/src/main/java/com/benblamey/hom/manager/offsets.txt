@@ -1,0 +1,24 @@
+
+GROUP                                              TOPIC            PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-0642119cf-a964-457c-af88-f7acd15c5507 haste-input-data 0          1000            1000            0               -               -               -
+
+GROUP                                              TOPIC            PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-0d2d5aebf-d61b-4f07-9c1c-b1fe6aff54a4 haste-input-data 0          1000            1000            0               -               -               -
+
+GROUP                                              TOPIC                                            PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-12555dc79-fb1a-4ee5-9c28-7978ec0e6c87 hom-topic-0-d2d5aebf-d61b-4f07-9c1c-b1fe6aff54a4 0          948             948             0               -               -               -
+
+GROUP                                              TOPIC                                            PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-199a9e9a1-b475-44ef-bc3a-0d99dee01b66 hom-topic-0-642119cf-a964-457c-af88-f7acd15c5507 0          948             948             0               -               -               -
+
+GROUP                                              TOPIC                                            PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-24cf2a039-07de-428d-9207-98d98d5229c2 hom-topic-1-99a9e9a1-b475-44ef-bc3a-0d99dee01b66 0          905             905             0               -               -               -
+
+GROUP                                             TOPIC                                          PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-261bcfef-0702-433b-9eda-1e0ef62804ef hom-topic-c5f5f0fc-012c-42e7-82f5-54b31c847461 0          948             948             0               -               -               -
+
+GROUP                                              TOPIC                                            PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-27885938d-74e5-4133-8c4f-a79344d97211 hom-topic-1-2555dc79-fb1a-4ee5-9c28-7978ec0e6c87 0          905             905             0               -               -               -
+
+GROUP                                             TOPIC            PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+app-hom-tier-c5f5f0fc-012c-42e7-82f5-54b31c847461 haste-input-data 0          1000            1000            0               -               -               -

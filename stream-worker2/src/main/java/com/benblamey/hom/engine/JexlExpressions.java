@@ -21,11 +21,12 @@ public class JexlExpressions {
             jc.set("data", data);
             jc.set("key", key);
             // Now evaluate the expression, getting the result
-            Boolean result = (Boolean) e.evaluate(jc);
+            // TODO: this is returning a string
+            Object result = e.evaluate(jc);
 
             System.out.println("Parsing: " + data + " with jexl " + jexlExpression + " result: " + result);
 
-            return result;
+            return (Boolean)result;
         };
 
         return predicate;

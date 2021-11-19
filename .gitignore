@@ -2,4 +2,5 @@ out
 **/build/**
 .DS_Store
 .gradle
-kafka/data/**
+kafka/kafka-data/**
+kafka/zookeeper-data/**

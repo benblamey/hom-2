@@ -3,6 +3,7 @@ package com.benblamey.hom.engine;
 
 import com.benblamey.hom.CommandLineArguments;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -36,19 +37,12 @@ public class PipelineEngineComponent {
         this.m_predicate = predicate;
     }
 
-    private KStream<Long, JSONObject> buildStreamTopology(final StreamsBuilder builder) {
+    private void buildStreamTopology(final StreamsBuilder builder) {
         // Create a stream from the input topic.
-        final KStream<Long, String> source = builder.stream(
-                CommandLineArguments.getInputTopic(),
-                Consumed.with(Serdes.Long(), Serdes.String()));
-
-        KStream<Long, JSONObject> kStream = source.mapValues(value -> (JSONObject) JSONValue.parse(value));
-
-        kStream.filter(m_predicate)
-                .mapValues(value -> JSONValue.toJSONString(value))
+        builder.stream(CommandLineArguments.getInputTopic(),
+                        Consumed.with(Serdes.Long(), Serdes.String()))
+                .filter((k,value) -> m_predicate.test(k, JSONValue.parse(value)))
                 .to(CommandLineArguments.getOutputTopic(), Produced.with(Serdes.Long(), Serdes.String()));
-
-        return kStream;
     }
 
     public void start() {

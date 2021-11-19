@@ -2,6 +2,33 @@
 apiVersion: v1
 kind: Pod
 metadata:
+  name: zookeeper
+  labels:
+    # This is used for the service "selector".
+    app: zookeeper
+spec:
+  containers:
+  - image: hom-impl-2.kafka
+    # image is local-only atm.
+    imagePullPolicy: Never
+    name: zookeeper
+    command: ["bash"]
+    args: ["-ec","./bin/zookeeper-server-start.sh config/zookeeper.properties"]
+    volumeMounts:
+    - mountPath: /tmp/zookeeper
+      name: dev-data-volume-zookeeper
+  volumes:
+  - name: dev-data-volume-zookeeper
+    hostPath:
+      # dev purpose - location on host
+      path: /Users/benblamey/projects/github-me/hom-impl-2/kafka/zookeeper-data
+      type: Directory
+  restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
   name: kafka
   labels:
     # This is used for the service "selector".
@@ -12,19 +39,38 @@ spec:
     # image is local-only atm.
     imagePullPolicy: Never
     name: kafka
+    command: ["bash"]
+    args: ["-ec","./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect=zookeeper-service:2181 --override listeners=ALICE://0.0.0.0:9092,BOB://0.0.0.0:19092 --override advertised.listeners=ALICE://kafka-service:9092,BOB://localhost:19092 --override listener.security.protocol.map=ALICE:PLAINTEXT,BOB:PLAINTEXT --override inter.broker.listener.name=ALICE --override auto.create.topics.enable=true;"]
     volumeMounts:
     - mountPath: /tmp/kafka-logs
-      name: dev-data-volume
+      name: dev-data-volume-kafka
   volumes:
-  - name: dev-data-volume
+  - name: dev-data-volume-kafka
     hostPath:
       # dev purpose - location on host
-      path: /Users/benblamey/projects/github-me/hom-impl-2/kafka/data
+      path: /Users/benblamey/projects/github-me/hom-impl-2/kafka/kafka-data
       type: Directory
   restartPolicy: Always
-  
+
 ---
 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: manager
+spec:
+  containers:
+  - image: hom-impl-2.manager
+    # image is local-only atm.
+    imagePullPolicy: Never
+    name: manager
+    command: ["java"]
+    args: ["-cp","output.jar","-DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092","com.benblamey.hom.manager.ManagerMainREST"]
+  restartPolicy: Always
+
+
+
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -42,4 +88,20 @@ spec:
       targetPort: 9092
 
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-service
+spec:
+  selector:
+    # This matches the label for the pods above.
+    app: zookeeper
+  ports:
+    # note: for dev connections from the host outside k8, we use port forwarding direct to the pod.
+
+    - name: zookeeper
+      protocol: TCP
+      port: 2181
+      targetPort: 2181
+
 
