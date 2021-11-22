@@ -81,8 +81,9 @@ public class ManagerMainREST {
             return json;
         });
 
-        spark.Spark.get("/offsets", (req, res) -> {
-            logger.info("/offsets");
+        spark.Spark.get("/raw_offsets", (req, res) -> {
+            // recommended use /info. left for debugging.
+            logger.info("/raw_offsets");
             List<Offsets.OffsetInfo> offsetInfos = Offsets.fetchOffsets();
             String json = JSONObject.toJSONString(Map.of("offsets",offsetInfos));
             logger.debug(json);

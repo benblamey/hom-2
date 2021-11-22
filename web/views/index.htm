@@ -1,0 +1,392 @@
+<!Doctype html>
+<html>
+<head>
+  <title>HASTE-o-mactic</title>
+  <link rel='stylesheet' type='text/css' href='styles.css'>
+  <script type='text/javascript' src='https://knockoutjs.com/downloads/knockout-3.5.1.debug.js'></script>
+  <script type='text/javascript' src='./demo-ih-model.js'></script>
+</head>
+<body>
+<script>
+
+  function addOutputStreamClicked(node) {
+    console.log(node.name)
+    node.outputStreams.push(
+      {
+        id: generateUUID(),
+        items_streamed: ko.observable(0),
+      }
+    )
+
+  }
+
+  function visit_all(tree, func) {
+    func(tree);
+    for (childIndex in tree.children()) {
+      child = tree.children()[childIndex]
+      console.log(`visiting child ${child}`)
+      visit_all(child, func)
+    }
+  }
+
+  function getColor(interestingness) {
+    function pad2_hex(number) {
+      return (number < 16 ? '0' : '') + number.toString(16)
+    }
+
+    r = 0 + Math.round(interestingness * 255);
+    g = 0;
+    b = 0 + Math.round((1 - interestingness) * 255);
+    colstr =  `#${pad2_hex(r)}${pad2_hex(g)}${pad2_hex(b)}`
+    console.log(colstr)
+    return colstr
+  }
+
+  function initializeNode(node) {
+    node.isSelected = ko.observable(false);
+    node.childGroupingMethod = ko.observable("radio_child_grouping_method_none");
+    node.minInt = ko.observable(0)
+    node.maxInt = ko.observable(1)
+    console.log(node)
+    node.childGroupingMethod.subscribe((newvalue) => childGroupingMethodChanged(node, newvalue));
+  }
+
+  function connectToStreamClick(stream) {
+    window.prompt('Copy the code below:', getSparkCodeForKafkaStream(stream.id));
+  }
+
+  function newNode(name) {
+    node = {
+      name: name,
+      id: generateUUID(),
+      children: ko.observableArray(),
+      data_points: ko.observableArray(),
+      outputStreams: ko.observableArray(),
+    };
+    initializeNode(node);
+    return node;
+  }
+
+  function updateInterestingnessOnChildren(node) {
+    children = node.children();
+    max = node.maxInt();
+    min = node.minInt();
+    num_of_children = node.children().length;
+    for (i = 0; i < num_of_children; i++) {
+      children[i].minInt(min + i * (1/num_of_children) * (max - min));
+      children[i].maxInt(min + (i + 1) * (1/num_of_children) * (max - min));
+    }
+  }
+
+  function updateFrequencies() {
+    visit_all(demo_ih_model.root_node, node => {
+      node.data_points(demo_ih_model.data_points().filter(p => p.interestingness > node.minInt() && p.interestingness < node.maxInt()));
+
+      node.outputStreams().forEach(stream => {
+        stream.items_streamed(  Math.min(node.data_points().length, stream.items_streamed() + Math.floor(Math.random() * 30)) );
+      })
+    });
+
+  }
+
+  function childGroupingMethodChanged(node, newValue) {
+    console.log(`node ${node} has new child grouping value ${newValue}`)
+    switch (newValue) {
+      case "radio_child_grouping_method_none":
+        node.children.removeAll()
+        break;
+      case "radio_child_grouping_method_explicit":
+        expr = window.prompt(`Choose explicit splitting function:`, "feature.foo > 42");
+        node.children.removeAll()
+        node.children.push(newNode(`Group B - ${expr} is false`))
+        node.children.push(newNode(`Group A - ${expr} is true`))
+        break;
+      case "radio_child_grouping_method_unsupervised_clustering":
+        number_of_clusters = 1*window.prompt(`e.g. How many clusters?:`, 5);
+        clustering_alg = window.prompt(`e.g. which algorithm? which feature?:`,'(k-means, feature_foo)');
+        node.children.removeAll()
+        for (i = 0; i < number_of_clusters; i++) {
+          node.children.push(newNode(`${clustering_alg} - cluster ${String.fromCharCode(97 + (i) % 26)}`))
+        }
+        break;
+      case "radio_child_grouping_method_unsupervised_binning":
+        feature_to_bin = window.prompt(`bin on which feature?`, 'feature_foo')
+        number_of_bins = 1*window.prompt(`e.g. How many quantiles? (e.g. 4,10):`, '4');
+        node.children.removeAll()
+        for (i = 0; i < number_of_bins; i++) {
+          node.children.push(newNode(`quantile ${i} on feature ${feature_to_bin}`))
+        }
+        break;
+      case "radio_child_grouping_method_supervised_al":
+        node.children.removeAll()
+        node.children.push(newNode("active learning class A"))
+        node.children.push(newNode("active learning class B"))
+        break;
+    }
+
+    updateInterestingnessOnChildren(node)
+    visit_all(node, n => updateFrequencies(n))
+  }
+
+  var demo_ih_model;
+
+  window.onload = (event) => {
+
+    // Demo data for now
+    demo_ih_model = {
+      root_node: newNode("root (all data)"),
+      data_points: ko.observableArray(),
+    }
+    console.log(demo_ih_model)
+
+    function newDataPoint() {
+      return {
+        interestingness: Math.random(),
+        feature_foo: Math.random() * 100,
+        feature_bar: Math.random(),
+        feature_wibble: Math.floor(Math.random() * 10),
+        example_image: './ex-'+ Math.floor(Math.random() * 10) + '.png',
+      }
+    }
+
+
+
+    setInterval(function(){
+      console.log('adding new data items');
+      new_data_points_per_interval = 100 + Math.floor(Math.random() * 10);
+      for (i = 0; i < new_data_points_per_interval; i++ ){
+        demo_ih_model.data_points().push(newDataPoint());
+
+      }
+      updateFrequencies();
+    },3000);
+
+    // visit_all(demo_ih_model.root_node, (node) => {
+    //   initializeNode(node)
+    // })
+
+    demo_ih_model.selectedNode = ko.observable(demo_ih_model.root_node);
+    demo_ih_model.root_node.isSelected(true);
+
+    console.log(demo_ih_model)
+
+    // set demo_ih_model as the root VM.
+    // this is referred to as $data from within the bindings.
+    ko.applyBindings(demo_ih_model);
+  }
+
+  function onNewNodeSelected(node) {
+    demo_ih_model.selectedNode(node)
+  }
+
+  treeview_item_clicked = (node) => {
+    console.log('treeview_item_clicked');
+    console.log(node);
+    visit_all(demo_ih_model.root_node, (node) => {
+      node.isSelected(false)
+    })
+    node.isSelected(true);
+    onNewNodeSelected(node);
+  }
+
+</script>
+
+<div id="header">
+  <h1>HASTE&trade;-o-matic&trade;</h1>
+</div>
+
+
+<div id="treeview-container">
+
+  <ul data-bind="template: { name: 'itemTmpl', foreach: $data.root_node }" id="treeview"
+  ></ul>
+  <script id="itemTmpl" type="text/html">
+    <li>
+      <span data-bind="text:name + ' ('+data_points().length+') ', click: treeview_item_clicked, class: isSelected() ? 'selected' : '', style: { background: getColor((minInt() + maxInt())/2) }">
+      </span>
+      <ul data-bind="template: { name: 'itemTmpl', foreach: $data.children() }">
+      </ul>
+    </li>
+  </script>
+</div>
+
+<div id="editor-container">
+  <div id="editor" data-bind="with: selectedNode">
+    <h2>Data Partition: "<span data-bind="text: name"></span>"</h2>
+    <div id="node-editor-id">ID is <span data-bind="text: id"></span></div>
+
+    <div data-bind="style: { background: getColor((minInt() + maxInt())/2) }" class="interestingness-editor-label">Interestingness span is <span data-bind="text: minInt().toFixed(2)"></span> to <span data-bind="text: maxInt().toFixed(2)"></span></div>
+
+    <div>Number of data items within this node (and descendants) is <b><span data-bind="text: data_points().length"></span></b>.</div>
+
+    <div>
+      <fieldset>
+        <legend>Child Partitioning</legend>
+
+        <!-- in HTML, radio buttons are grouped by the name attirbuete. label is the text in the browser-->
+        <div>
+          <input type="radio" name="child_grouping_method"
+                 value="radio_child_grouping_method_none"
+                 id="radio_child_grouping_method_none"
+                 data-bind="checked: childGroupingMethod">
+          <label for="radio_child_grouping_method_none">No further partitioning.</label>
+        </div>
+
+        <div>
+          <input type="radio" name="child_grouping_method"
+                 id="radio_child_grouping_method_explicit"
+                 value="radio_child_grouping_method_explicit"
+                 data-bind="checked: childGroupingMethod">
+          <label for="radio_child_grouping_method_explicit">Explicit split into two groups by user-defined splitting
+            function.</label>
+
+        </div>
+        <div>
+          <input type="radio" name="child_grouping_method"
+                 id="radio_child_grouping_method_unsupervised_clustering"
+                 value="radio_child_grouping_method_unsupervised_clustering"
+                 data-bind="checked: childGroupingMethod">
+          <label for="radio_child_grouping_method_unsupervised_clustering">Unsupervised Splitting - clustering.</label>
+        </div>
+        <div>
+          <input type="radio" name="child_grouping_method"
+                 id="radio_child_grouping_method_unsupervised_binning"
+                 value="radio_child_grouping_method_unsupervised_binning"
+                 data-bind="checked: childGroupingMethod">
+          <label for="radio_child_grouping_method_unsupervised_binning">Unsupervised Splitting - quantiles.</label>
+        </div>
+        <div>
+          <input type="radio" name="child_grouping_method" disabled
+                 data-bind="checked: childGroupingMethod">
+          <label>Unsupervised Splitting - outlier detection.</label>
+        </div>
+        <div>
+          <input type="radio"
+                 name="child_grouping_method"
+                 id="radio_child_grouping_method_supervised_al"
+                 value="radio_child_grouping_method_supervised_al"
+                 data-bind="checked: childGroupingMethod">
+          <label for="radio_child_grouping_method_supervised_al">Algorithms for supervised learning of splitting function (with active
+            learning).</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Active Output Streams</legend>
+        <div>
+          Streams are used to send data to other compute platforms for feature extraction or further processing. Data items are ordered within the stream according to the interestingness of the data items.
+
+
+          <table>
+            <trhead>
+            <tr>
+              <td>
+                ID
+              </td>
+              <td>
+                Status
+              </td>
+              <td>
+                Get Code For...
+              </td>
+            </tr>
+            </trhead>
+            <tbody data-bind="foreach: outputStreams">
+
+            <tr data-bind="if: $data">
+              <td data-bind="text: id">
+
+              </td>
+              <td data-bind="text: items_streamed() + ' items streamed/queued...'" style="font-weight: bold">
+
+              </td>
+              <td>
+                <a href="" data-bind="click: connectToStreamClick">Apache Spark...</a>
+                <a href="" data-bind="click: connectToStreamClick">HarmonicIO...</a>
+                <a href="" data-bind="click: connectToStreamClick">CellProfiler Workers...</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+          <div>
+            <button data-bind="click: addOutputStreamClicked">
+              Add output stream...
+            </button>
+          </div>
+
+        </div>
+      </fieldset>
+
+
+      <fieldset>
+        <legend>Data Items</legend>
+
+        <span>Only the some most recent elements are displayed.</span>
+
+        <div>
+          <table>
+            <trhead>
+              <tr>
+                <td></td>
+                <td>
+                  Feature_Foo
+                </td>
+                <td>
+                  Feature_Bar
+                </td>
+                <td>
+                  Feature_Wibble
+                </td>
+              </tr>
+            </trhead>
+            <tbody data-bind="foreach: data_points().slice(-7)">
+            <tr>
+              <td>
+                <img class="example_image" data-bind="attr: {src: example_image}">
+              </td>
+              <td data-bind="text: feature_foo.toFixed(3)"></td>
+              <td data-bind="text: feature_bar.toFixed(3)"></td>
+              <td data-bind="text: feature_wibble"></td>
+            </tr>
+            </tbody>
+
+          </table>
+          ...
+
+        </div>
+      </fieldset>
+
+
+      <fieldset>
+        <legend>Additional Operations</legend>
+        <div>
+          <button>
+            Export CSV...
+          </button>
+        </div>
+        <!--
+        <div>
+          <button>
+            View as a table...
+          </button>
+        </div>
+        -->
+        <div>
+          <button>
+            Visualize...
+          </button>
+        </div>
+
+        <div data-bind="if: (childGroupingMethod() == 'radio_child_grouping_method_supervised_al')">
+          <button onclick="alert('popup here with custom viewer..')">
+            Open Active Learning GUI...
+          </button>
+        </div>
+
+      </fieldset>
+    </div>
+  </div>
+</div>
+</body>
+</html>

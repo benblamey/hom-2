@@ -1,0 +1,80 @@
+body {
+    font-family: Arial;
+    height: auto;
+}
+
+
+header {
+    width: 100pc;
+
+}
+h1 {
+    text-align: center;
+    font-size: medium;
+    font-weight: bold;
+}
+
+#treeview-container {
+    width: 450px;
+    height: 100pc;
+
+    float: left    ;
+        display: inline-block;
+}
+
+#editor-container {
+
+    min-height: 100pc;
+
+    /*
+    https://stackoverflow.com/questions/1260122/expand-a-div-to-fill-the-remaining-width
+    */
+  float: none;
+  overflow: hidden;
+}
+
+#treeview {
+color: white;
+}
+
+.selected {
+    background: whitesmoke;
+    border-style: solid;
+    border-width: 4px;
+    border-color: black;
+    font-weight: bold;
+}
+
+#editor {
+    padding: 20px;
+    border-width: medium;
+    border-color: lightgrey;
+    border-style: solid;
+}
+
+
+.interestingness-editor-label {
+    color: white;
+    padding: 3px;
+}
+
+div {
+    margin-top: 5px;
+}
+
+fieldset {
+    margin-top: 10px;
+}
+
+table, th, td {
+    border: 1px solid lightgray;
+    margin: 10px;
+}
+
+.example_image{
+    max-width: 100px;
+}
+
+#node-editor-id {
+    color: darkgray;
+}
