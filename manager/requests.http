@@ -1,24 +1,27 @@
 ### add-tier
-
 POST http://localhost:4567/add-tier
 Accept: application/json
 
 {
-  "jexl_expression": "data.foo > 5"
+   "jexl_expression": "data.foo > 5"
 }
 
 ### remove-tier
-
 POST http://localhost:4567/remove-tier
 Accept: application/json
 
 ### info
-
 GET http://localhost:4567/info
 Accept: application/json
 
+### info-fake
+GET http://localhost:4567/info-fake
+Accept: application/json
+
+### sample
+GET http://localhost:4567/sample/hom-topic-1-458959a4-df0a-4a10-b570-b35cb484c5f4
+Accept: application/json
 
 ### offsets
-
 GET http://localhost:4567/offsets
 Accept: application/json

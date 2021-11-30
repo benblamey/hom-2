@@ -40,7 +40,7 @@ spec:
     imagePullPolicy: Never
     name: kafka
     command: ["bash"]
-    args: ["-ec","./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect=zookeeper-service:2181 --override listeners=ALICE://0.0.0.0:9092,BOB://0.0.0.0:19092 --override advertised.listeners=ALICE://kafka-service:9092,BOB://localhost:19092 --override listener.security.protocol.map=ALICE:PLAINTEXT,BOB:PLAINTEXT --override inter.broker.listener.name=ALICE --override auto.create.topics.enable=true --override num.partitions=1;"]
+    args: ["-ec","./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect=zookeeper-service:2181 --override listeners=ALICE://0.0.0.0:9092,BOB://0.0.0.0:19092 --override advertised.listeners=ALICE://kafka-service:9092,BOB://localhost:19092 --override listener.security.protocol.map=ALICE:PLAINTEXT,BOB:PLAINTEXT --override inter.broker.listener.name=ALICE  --override log.retention.minutes=10 --override auto.create.topics.enable=true --override num.partitions=1;"]
     volumeMounts:
     - mountPath: /tmp/kafka-logs
       name: dev-data-volume-kafka

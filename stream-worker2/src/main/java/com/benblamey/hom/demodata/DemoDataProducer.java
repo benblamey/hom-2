@@ -18,7 +18,7 @@ public class DemoDataProducer {
     private static final Logger logger = LoggerFactory.getLogger(DemoDataProducer.class);
 
     public static final String INPUT_TOPIC = "haste-input-data";
-    private static final int NUM_OF_MESSAGES = 50000;
+    private static final int NUM_OF_MESSAGES = 5000;
 
     private Thread m_producerThread;
     private boolean m_stopProducerThread = false;
@@ -57,7 +57,7 @@ public class DemoDataProducer {
                 if (logger.isDebugEnabled()) {
                     // This waits for completion...
                     RecordMetadata metadata = send.get();
-                    logger.debug("sent record(key=%s value='%s')" + " metadata(partition=%d, offset=%d)\n",
+                    logger.debug("sent record(key=%d value='%s')" + " metadata(partition=%d, offset=%d)\n",
                             record.key(), record.value(), metadata.partition(), metadata.offset());
                     Thread.sleep(100);
                 }

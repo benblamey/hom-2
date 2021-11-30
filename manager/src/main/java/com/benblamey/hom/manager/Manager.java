@@ -39,7 +39,7 @@ public class Manager {
         return uuid.toString();
     }
 
-    private List<Tier> m_tiers = new ArrayList<Tier>();
+    private final List<Tier> m_tiers = new ArrayList<Tier>();
 
     public void cleanup() throws IOException, InterruptedException {
         String s = Util.executeShellLogAndBlock(new String[]{"kubectl", "get", "pods"});
@@ -65,7 +65,7 @@ public class Manager {
     public void addDemoTier(String jexlExpression) throws IOException, InterruptedException {
         Tier tier = new Tier();
         tier.friendlyTierId = Integer.toString(m_tiers.size());
-        tier.jexlExpression = jexlExpression;
+        tier.jexlExpression = jexlExpression.toString();
         tier.uniqueTierId = generateUniqueTierID();
         tier.inputTopic = m_tiers.isEmpty() ? "haste-input-data" : m_tiers.get(m_tiers.size() - 1).outputTopic;
         tier.outputTopic = "hom-topic-" + tier.friendlyTierId + "-" + tier.uniqueTierId;

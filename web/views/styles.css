@@ -3,11 +3,6 @@ body {
     height: auto;
 }
 
-
-header {
-    width: 100pc;
-
-}
 h1 {
     text-align: center;
     font-size: medium;
@@ -17,15 +12,12 @@ h1 {
 #treeview-container {
     width: 450px;
     height: 100pc;
-
-    float: left    ;
-        display: inline-block;
+    float: left;
+    display: inline-block;
 }
 
 #editor-container {
-
     min-height: 100pc;
-
     /*
     https://stackoverflow.com/questions/1260122/expand-a-div-to-fill-the-remaining-width
     */
@@ -34,13 +26,13 @@ h1 {
 }
 
 #treeview {
-color: white;
+    color: white;
 }
 
 .selected {
     background: whitesmoke;
     border-style: solid;
-    border-width: 4px;
+    border-width: 6px;
     border-color: black;
     font-weight: bold;
 }
@@ -56,6 +48,10 @@ color: white;
 .interestingness-editor-label {
     color: white;
     padding: 3px;
+}
+
+.minor_tier_info {
+    font-size: smaller;
 }
 
 div {
