@@ -131,7 +131,6 @@ public class ManagerMainREST {
 
         Map<String, ConsumerRecords<Long, String>> sampleByUniqueTierID = new HashMap<String, ConsumerRecords<Long, String>>();
 
-
         spark.Spark.get("/sample/:topicid", (req, res) -> {
             String topicID = req.params(":topicid");
 
@@ -152,7 +151,7 @@ public class ManagerMainREST {
             // This is a bit of a horror show...
             // The records are serialized as JSON, so can be returned as-is over the web API.
             StringBuilder sb = new StringBuilder();
-            sb.append( "{ \"sample\": [");
+            sb.append("{ \"sample\": [");
 
             logger.info(sb.toString());
             sample.forEach(cr -> sb.append(cr.value() + ","));
@@ -168,6 +167,15 @@ public class ManagerMainREST {
             logger.info(sb.toString());
 
             return sb.toString();
+        });
+
+        spark.Spark.get("/scale/:tier/:scale", (req, res) -> {
+            int tier = Integer.parseInt(req.params(":tier"));
+            int scale = Integer.parseInt(req.params(":scale"));
+            logger.info("scaling tier " + tier + " to " + scale);
+            addHeaders(res);
+            manager.setScale(manager.getTiers().get(tier), scale);
+            return true;
         });
 
         spark.Spark.awaitInitialization();

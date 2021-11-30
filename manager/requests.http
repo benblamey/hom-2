@@ -14,6 +14,15 @@ Accept: application/json
 GET http://localhost:4567/info
 Accept: application/json
 
+### scale up
+GET http://localhost:4567/scale/0/5
+Accept: application/json
+
+### scale down
+GET http://localhost:4567/scale/0/1
+Accept: application/json
+
+
 ### info-fake
 GET http://localhost:4567/info-fake
 Accept: application/json
