@@ -71,7 +71,7 @@ spec:
         # image is local-only atm.
         imagePullPolicy: Never
         command: ["bash"]
-        args: ["-ec","cat /data/foo.txt"]
+        args: ["-ec","while true; do echo -n .; sleep 1; done"]
         volumeMounts:
         - mountPath: /data
           name: volume-hom-pv

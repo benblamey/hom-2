@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.BinaryOperator;
 
 public class ManagerMainREST {
 
@@ -61,11 +60,11 @@ public class ManagerMainREST {
         spark.Spark.get("/info", (req, res) -> {
             logger.info("/info");
             addHeaders(res);
-            List<Manager.Tier> tiers = manager.getTiers();
+            List<Tier> tiers = manager.getTiers();
             List<Offsets.OffsetInfo> offsetInfos = Offsets.fetchOffsets();
             List<Map> tierJsonMaps = new ArrayList<>();
 
-            for (Manager.Tier t : tiers) {
+            for (Tier t : tiers) {
                 Long sumOfCurrentOffsets = 0L;
                 Long sumOfLogEndOffsets = 0L;
                 Map<String, Object> jsonMap = t.toMap();
@@ -174,7 +173,7 @@ public class ManagerMainREST {
             int scale = Integer.parseInt(req.params(":scale"));
             logger.info("scaling tier " + tier + " to " + scale);
             addHeaders(res);
-            manager.setScale(manager.getTiers().get(tier), scale);
+            manager.getTiers().get(tier).setScale(scale);
             return true;
         });
 

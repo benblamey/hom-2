@@ -24,7 +24,7 @@ RUN apt install -y curl
 
 RUN apt install -y python3.10-dev
 RUN apt install -y python3-pip
-RUN python3 -m pip install jupyterlab
+RUN python3 -m pip install jupyterlab==3.2.4
 
 CMD ["/bin/bash","-ec","while true; do echo -n .; sleep 1; done"]
 

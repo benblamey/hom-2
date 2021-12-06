@@ -25,6 +25,12 @@ RUN java --version
 ######
 
 
+RUN apt install -y python3.10-dev
+RUN apt install -y python3-pip
+
+RUN python3 -m pip install jupyterlab==3.2.4
+RUN python3 -m pip install nbconvert==6.3.0
+
 
 RUN curl -O https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz
 RUN tar -xzf kafka_2.13-3.0.0.tgz

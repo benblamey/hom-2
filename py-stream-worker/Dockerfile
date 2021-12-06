@@ -29,5 +29,5 @@ RUN apt install -y python3.10-dev
 RUN apt install -y python3-pip
 
 COPY setup.py .
-COPY py_stream_worker .
+COPY py_stream_worker/ /py_stream_worker/
 RUN python3 -m pip install -e .

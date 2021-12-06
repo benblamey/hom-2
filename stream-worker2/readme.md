@@ -1,10 +1,16 @@
 kubectl config use-context docker-desktop
 
 
-kubectl delete pod manager ; kubectl delete pod kafka
 
+
+
+kubectl delete persistentvolumeclaim/hom-pv-claim persistentvolume/hom-pv deployment.apps/py-stream-worker-deployment pods/notebook ; kubectl apply -f kubernetes/k8.yaml
+
+kubectl delete deployment py-stream-worker-deployment ; kubectl apply -f kubernetes/k8.yaml
 kubectl delete pod manager ; kubectl apply -f kubernetes/k8.yaml
+kubectl delete pod notebook ; kubectl apply -f kubernetes/k8.yaml
 kubectl port-forward --address localhost pods/manager 4567:4567
+kubectl port-forward --address localhost pods/notebook 8888:8888
 
 Stream demo data (and attach):
 kubectl delete pod demo-data ; kubectl run demo-data --image hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- java -cp output.jar -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain 
@@ -20,6 +26,12 @@ kubectl port-forward --address localhost pods/manager 5005:5005
 Port forwarding for REST API on manager:
 kubectl port-forward --address localhost pods/manager 4567:4567
 
+TODO:
+Notebook password is:
+hej-hom-impl-foo
+,"--NotebookApp.password", "argon2:$argon2id$v=19$m=10240,t=10,p=8$LKoe+YVbK+qMsaH87iMiLQ$XroRerX0xeyPoBB1Ik2odA",
+(To generate new password hash: from notebook.auth import passwd; passwd() )
+
 ---
 # Development
 port forward, Run this each time the kafka is started for local debugging:
@@ -28,6 +40,13 @@ kubectl port-forward --address localhost pods/kafka 19092:19092
 
 Get shell inside kafka pod:
 kubectl exec --stdin --tty kafka -- /bin/bash
+kubectl exec --stdin --tty notebook -- /bin/bash
+
+
+need --privileged=true to do mounting. see https://stackoverflow.com/questions/36553617/how-do-i-mount-bind-inside-a-docker-container
+docker run -i --tty --privileged=true c014e6306fdd /bin/bash
+
+docker run -i --tty notebook
 
 
 Set up kafka topics.
@@ -52,3 +71,7 @@ usage: __main__.py [-h] [--debug] [--show-config] [--show-config-json] [--genera
 [--browser ServerApp.browser] [--pylab ServerApp.pylab] [--gateway-url GatewayClient.url] [--watch [LabApp.watch]] [--app-dir LabApp.app_dir]
 [extra_args ...]
     
+
+
+TODO:
+jupyter nbconvert --to script /data/example.ipynb 

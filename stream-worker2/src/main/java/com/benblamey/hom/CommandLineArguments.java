@@ -2,56 +2,41 @@ package com.benblamey.hom;
 
 public  class CommandLineArguments {
 
-    public static String getKafkaBootstrapServerConfig() {
+    private static String getString(String argumentName) {
         // returns null if not specified.
-        String result = System.getProperty("KAFKA_BOOTSTRAP_SERVER");
+        String result = System.getProperty(argumentName);
         if (result == null) {
-            // for dev
-            result = "localhost:19092";
+            throw new RuntimeException(argumentName + " is null.");
         }
-        System.out.println("KAFKA_BOOTSTRAP_SERVER is " + result);
+        System.out.println(argumentName + " is " + result);
         return result;
     }
 
+    public static String getKafkaBootstrapServerConfig() {
+        return getString("KAFKA_BOOTSTRAP_SERVER");
+    }
 
     public static String getInputTopic() {
-        // returns null if not specified.
-        String result = System.getProperty("INPUT_TOPIC");
-        if (result == null) {
-            throw new RuntimeException("INPUT_TOPIC is null.");
-        }
-        System.out.println("INPUT_TOPIC is " + result);
-        return result;
+        return getString("INPUT_TOPIC");
     }
 
     public static String getOutputTopic() {
-        // returns null if not specified.
-        String result = System.getProperty("OUTPUT_TOPIC");
-        if (result == null) {
-            throw new RuntimeException("OUTPUT_TOPIC is null.");
-        }
-        System.out.println("OUTPUT_TOPIC is " + result);
-        return result;
+        return getString("OUTPUT_TOPIC");
     }
 
     public static String getJexlExpression() {
-        // returns null if not specified.
-        String result = System.getProperty("JEXL_EXPRESSION");
-        if (result == null) {
-            throw new RuntimeException("JEXL_EXPRESSION is null.");
-        }
-
-        System.out.println("JEXL_EXPRESSION is " + result);
-        return result;
+        return getString("JEXL_EXPRESSION");
     }
 
     public static String getKafkaApplicationID() {
-            // returns null if not specified.
-            String result = System.getProperty("KAFKA_APPLICATION_ID");
-            if (result == null) {
-                throw new RuntimeException("KAFKA_APPLICATION_ID is null.");
-            }
-            System.out.println("KAFKA_APPLICATION_ID is " + result);
-            return result;
+            return getString("KAFKA_APPLICATION_ID");
         }
+
+    public static Object getPythonFunctionName() {
+        return getString("PYTHON_FUNCTION_NAME");
+    }
+
+    public static Object getPythonFilename() {
+        return getString("PYTHON_FILENAME");
+    }
 }
