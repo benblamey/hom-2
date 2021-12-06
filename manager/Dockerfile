@@ -12,16 +12,19 @@ ENV LC_ALL C.UTF-8
 ENV TZ=Europe/Stockholm
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# ???? Always run update when changing package list, see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+# Always run update when changing package list, see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
 RUN apt update ; echo 'editthistoforcerun'
 
 # install curl
 RUN apt install -y curl
-
 RUN apt install -y openjdk-16-jre
 
-# fix so that we can find java
 RUN java --version
+
+# Lines above are common to all Dockerfiles in the project.
+######
+
+
 
 RUN curl -O https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz
 RUN tar -xzf kafka_2.13-3.0.0.tgz

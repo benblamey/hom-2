@@ -17,17 +17,17 @@ RUN apt update ; echo 'editthistoforcerun1'
 
 # install curl
 RUN apt install -y curl
-RUN apt install -y openjdk-16-jre
 
-RUN java --version
+#RUN apt install -y openjdk-16-jre
+#RUN java --version
 
 # Lines above are common to all Dockerfiles in the project.
 ######
 
-COPY build/libs/hom-impl-2.stream-worker2-1.0-SNAPSHOT.jar output.jar
 
+RUN apt install -y python3.10-dev
+RUN apt install -y python3-pip
 
-# ENTRYPOINT ["java","-jar","output.jar"]
-
-# This is left so that different main classes can be specified, and different properties set
-ENTRYPOINT ["java"]
+COPY setup.py .
+COPY py_stream_worker .
+RUN python3 -m pip install -e .

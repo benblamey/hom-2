@@ -13,21 +13,19 @@ ENV TZ=Europe/Stockholm
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Always run update when changing package list, see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
-RUN apt update ; echo 'editthistoforcerun1'
+RUN apt update ; echo 'editthistoforcerun6'
 
-# install curl
 RUN apt install -y curl
-RUN apt install -y openjdk-16-jre
-
-RUN java --version
+#RUN apt install -y openjdk-16-jre
+#RUN java --version
 
 # Lines above are common to all Dockerfiles in the project.
 ######
 
-COPY build/libs/hom-impl-2.stream-worker2-1.0-SNAPSHOT.jar output.jar
+RUN apt install -y python3.10-dev
+RUN apt install -y python3-pip
+RUN python3 -m pip install jupyterlab
+
+CMD ["/bin/bash","-ec","while true; do echo -n .; sleep 1; done"]
 
 
-# ENTRYPOINT ["java","-jar","output.jar"]
-
-# This is left so that different main classes can be specified, and different properties set
-ENTRYPOINT ["java"]

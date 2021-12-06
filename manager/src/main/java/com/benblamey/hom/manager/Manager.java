@@ -17,7 +17,7 @@ public class Manager {
         return m_tiers;
     }
 
-    public class Tier  {
+    public static class Tier  {
         ArrayList<String> podNames = new ArrayList<>();
         String friendlyTierId; // Friendly. Doesn't need to be unique
         String jexlExpression;

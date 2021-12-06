@@ -1,3 +1,87 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: manual
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hom-pv
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteMany
+  storageClassName: "manual"
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /Users/benblamey/projects/github-me/hom-impl-2/persistentvolume
+# NFS like this:
+#  nfs:
+#    server: 192.168.0.5
+#    path: /opt/foo
+#  mountOptions:
+# MacOSX uses NFS3.
+#        - nfsvers=3
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - docker-desktop
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hom-pv-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  # This is the key used to match the PV:
+  storageClassName: "manual"
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: py-stream-worker-deployment
+  labels:
+    app: py-stream-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: py-stream-worker
+  template:
+    metadata:
+      labels:
+        app: py-stream-worker
+    spec:
+      containers:
+      - name: py-stream-worker
+        image: hom-impl-2.py-stream-worker
+        # image is local-only atm.
+        imagePullPolicy: Never
+        command: ["bash"]
+        args: ["-ec","cat /data/foo.txt"]
+        volumeMounts:
+        - mountPath: /data
+          name: volume-hom-pv
+      volumes:
+      - name: volume-hom-pv
+        persistentVolumeClaim:
+          claimName: hom-pv-claim
+      restartPolicy: Always
+
+
 ---
 apiVersion: v1
 kind: Pod
@@ -23,6 +107,32 @@ spec:
       # dev purpose - location on host
       path: /Users/benblamey/projects/github-me/hom-impl-2/kafka/zookeeper-data
       type: Directory
+  restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notebook
+  labels:
+    app: notebook
+spec:
+  containers:
+  - image: hom-impl-2.notebook
+    # image is local-only atm.
+    imagePullPolicy: Never
+    name: notebook
+    command: ["python3"]
+    args: ["-m","jupyterlab","--no-browser","--NotebookApp.password='argon2:$argon2id$v=19$m=10240,t=10,p=8$LKoe+YVbK+qMsaH87iMiLQ$XroRerX0xeyPoBB1Ik2odA'","--allow-root","--notebook-dir","/data"]
+#    command: ["bash"]
+#    args: ["-ec","while true; do; echo -n .; sleep 1; done"]
+    volumeMounts:
+    - mountPath: /data
+      name: volume-hom-pv
+  volumes:
+  - name: volume-hom-pv
+    persistentVolumeClaim:
+      claimName: hom-pv-claim
   restartPolicy: Always
 
 ---
@@ -104,4 +214,5 @@ spec:
       port: 2181
       targetPort: 2181
 
+---
 

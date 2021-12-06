@@ -42,3 +42,13 @@ bin/kafka-topics.sh --list --bootstrap-server kafka-service:9092
 bin/kafka-topics.sh --describe hom-topic-0-d2d5aebf-d61b-4f07-9c1c-b1fe6aff54a4 --bootstrap-server kafka-service:9092
 bin/kafka-topics.sh --describe haste-input-data --bootstrap-server kafka-service:9092
 ./bin/kafka-consumer-groups.sh --bootstrap-server kafka-service:9092 --describe --all-groups
+
+
+Jupyter Notebook CLI:
+usage: __main__.py [-h] [--debug] [--show-config] [--show-config-json] [--generate-config] [-y] [--allow-root] [--no-browser] [--autoreload] [--script] [--no-script] [--core-mode] [--dev-mode]
+[--splice-source] [--expose-app-in-browser] [--extensions-in-dev-mode] [--collaborative] [--log-level ServerApp.log_level] [--config ServerApp.config_file] [--ip ServerApp.ip]
+[--port ServerApp.port] [--port-retries ServerApp.port_retries] [--sock ServerApp.sock] [--sock-mode ServerApp.sock_mode] [--transport KernelManager.transport]
+[--keyfile ServerApp.keyfile] [--certfile ServerApp.certfile] [--client-ca ServerApp.client_ca] [--notebook-dir ServerApp.root_dir] [--preferred-dir ServerApp.preferred_dir]
+[--browser ServerApp.browser] [--pylab ServerApp.pylab] [--gateway-url GatewayClient.url] [--watch [LabApp.watch]] [--app-dir LabApp.app_dir]
+[extra_args ...]
+    
