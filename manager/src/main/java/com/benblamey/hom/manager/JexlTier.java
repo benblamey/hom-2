@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public class Tier {
+public class JexlTier implements ITier {
 
-    Logger logger = LoggerFactory.getLogger(Tier.class);
+    Logger logger = LoggerFactory.getLogger(JexlTier.class);
 
     // Increasing this will probably break the code where we count up the offsets.
     // Assumes only 1 partition.
@@ -27,7 +27,7 @@ public class Tier {
         return uuid.toString();
     }
 
-    public Tier(String jexlExpression, int index, String inputTopic) throws IOException, InterruptedException {
+    public JexlTier(String jexlExpression, int index, String inputTopic) throws IOException, InterruptedException {
         this.friendlyTierId = Integer.toString(index);
         this.jexlExpression = jexlExpression.toString();
         this.uniqueTierId = generateUniqueTierID();
@@ -42,6 +42,7 @@ public class Tier {
         }
     }
 
+    @Override
     public Map<String, Object> toMap() {
         // For JSON, REST API.
         // return a mutable map
@@ -55,7 +56,43 @@ public class Tier {
         ));
     }
 
-    String addPodToTier() throws IOException, InterruptedException {
+    @Override
+    public void setScale(int newScale) throws IOException, InterruptedException {
+        List<String> podNames = this.podNames;
+
+        if (newScale == podNames.size()) {
+            logger.info("tier " + friendlyTierId + " already has count " + newScale + ". nothing to do.");
+        } else if (newScale > podNames.size()) {
+            int toAdd = newScale - podNames.size();
+            for (int i = 0; i < toAdd; i++) {
+                String podName = addPodToTier();
+                podNames.add(podName);
+            }
+        } else {
+            int toRemove = podNames.size() - newScale;
+            for (int i = 0; i < toRemove; i++) {
+                String podName = podNames.remove(podNames.size() - 1);
+                Util.executeShellLogAndBlock(new String[]{"kubectl", "delete", "pod", podName});
+            }
+        }
+    }
+
+    @Override
+    public void remove() throws IOException, InterruptedException {
+        this.setScale(0);
+    }
+
+    @Override
+    public String getOutputTopic() {
+        return this.outputTopic;
+    }
+
+    @Override
+    public String getKafkaApplicationID() {
+        return this.kafkaApplicationID;
+    }
+
+    private String addPodToTier() throws IOException, InterruptedException {
         int index = podNames.size();
         String podname = "engine-" + friendlyTierId + "-" + uniqueTierId + "-" + index;
 
@@ -87,23 +124,5 @@ public class Tier {
         return podname;
     }
 
-    public void  setScale(int newScale) throws IOException, InterruptedException {
-        List<String> podNames = this.podNames;
 
-        if (newScale == podNames.size()) {
-            logger.info("tier " + friendlyTierId + " already has count " + newScale + ". nothing to do.");
-        } else if (newScale > podNames.size()) {
-            int toAdd = newScale - podNames.size();
-            for (int i = 0; i < toAdd; i++) {
-                String podName = addPodToTier();
-                podNames.add(podName);
-            }
-        } else {
-            int toRemove = podNames.size() - newScale;
-            for (int i = 0; i < toRemove; i++) {
-                String podName = podNames.remove(podNames.size() - 1);
-                Util.executeShellLogAndBlock(new String[]{"kubectl", "delete", "pod", podName});
-            }
-        }
-    }
 }

@@ -314,7 +314,7 @@ function removeTier() {
 
 
 
-function addTier() {
+function addJexlTier() {
   expr = window.prompt(`Choose JEXL expression:`, "data.foo > 42");
 
   document.body.style.cursor = "wait";

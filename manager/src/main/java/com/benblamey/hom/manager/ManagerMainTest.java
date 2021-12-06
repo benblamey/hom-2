@@ -23,15 +23,15 @@ public class ManagerMainTest {
 
         System.out.println("Add a tier.....");
         s.nextLine();
-        m.addDemoTier();
+        m.addDemoJexlTier();
 
         System.out.println("Press enter to continue.....");
         s.nextLine();
-        m.addDemoTier();
+        m.addDemoJexlTier();
 
         System.out.println("Press enter to continue.....");
         s.nextLine();
-        m.addDemoTier();
+        m.addDemoJexlTier();
 
         System.out.println("Press enter to continue.....");
         s.nextLine();

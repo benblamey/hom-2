@@ -8,16 +8,13 @@ import java.util.*;
 
 public class Manager {
 
+    Logger logger = LoggerFactory.getLogger(Manager.class);
 
-    Logger logger = LoggerFactory.getLogger(class);
+    private final List<ITier> m_tiers = new ArrayList<ITier>();
 
-    public List<Tier> getTiers() {
+    public List<ITier> getTiers() {
         return m_tiers;
     }
-
-
-
-    private final List<Tier> m_tiers = new ArrayList<Tier>();
 
     public void cleanup() throws IOException, InterruptedException {
         String s = Util.executeShellLogAndBlock(new String[]{"kubectl", "get", "pods"});
@@ -35,15 +32,15 @@ public class Manager {
         }
     }
 
-    public void addDemoTier() throws IOException, InterruptedException {
+    public void addDemoJexlTier() throws IOException, InterruptedException {
         String jexlExpression = "data.foo > " + (m_tiers.size() + 1) * 5;
-        addDemoTier(jexlExpression);
+        addJexlTier(jexlExpression);
     }
 
-    public void addDemoTier(String jexlExpression) throws IOException, InterruptedException {
-        String inputTopic = m_tiers.isEmpty() ? "haste-input-data" : m_tiers.get(m_tiers.size() - 1).outputTopic;
+    public void addJexlTier(String jexlExpression) throws IOException, InterruptedException {
+        String inputTopic = m_tiers.isEmpty() ? "haste-input-data" : m_tiers.get(m_tiers.size() - 1).getOutputTopic();
         int tierIndex = m_tiers.size();
-        Tier tier = new Tier(jexlExpression, tierIndex, inputTopic);
+        JexlTier tier = new JexlTier(jexlExpression, tierIndex, inputTopic);
         m_tiers.add(tier);
     }
 
@@ -51,11 +48,12 @@ public class Manager {
         if (m_tiers.isEmpty()) {
             throw new RuntimeException("no tiers exist to remove");
         }
-        Tier tier = m_tiers.get(m_tiers.size() - 1);
 
-        tier.setScale(0);
+        ITier tier = m_tiers.get(m_tiers.size() - 1);
+
+        tier.remove();
         // TODO - remove old kafka data?
 
-        m_tiers.remove(m_tiers.size() - 1);
+        m_tiers.remove(tier);
     }
 }

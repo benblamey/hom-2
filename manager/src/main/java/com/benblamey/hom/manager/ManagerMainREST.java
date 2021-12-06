@@ -41,7 +41,7 @@ public class ManagerMainREST {
             JSONObject body = (JSONObject) p.parse(body1);
             String jexlExpression = (String) body.get("jexl_expression");
             logger.info(jexlExpression);
-            manager.addDemoTier(jexlExpression);
+            manager.addJexlTier(jexlExpression);
 
             return true;
         });
@@ -60,17 +60,17 @@ public class ManagerMainREST {
         spark.Spark.get("/info", (req, res) -> {
             logger.info("/info");
             addHeaders(res);
-            List<Tier> tiers = manager.getTiers();
+            List<ITier> tiers = manager.getTiers();
             List<Offsets.OffsetInfo> offsetInfos = Offsets.fetchOffsets();
             List<Map> tierJsonMaps = new ArrayList<>();
 
-            for (Tier t : tiers) {
+            for (ITier t : tiers) {
                 Long sumOfCurrentOffsets = 0L;
                 Long sumOfLogEndOffsets = 0L;
                 Map<String, Object> jsonMap = t.toMap();
 
                 for (Offsets.OffsetInfo oi : offsetInfos) {
-                    if (oi.GROUP.equals(t.kafkaApplicationID)) {
+                    if (oi.GROUP.equals(t.getKafkaApplicationID())) {
                         sumOfCurrentOffsets += oi.CURRENT_OFFSET;
                         sumOfLogEndOffsets += oi.LOG_END_OFFSET;
                     }
