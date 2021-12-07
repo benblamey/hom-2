@@ -37,7 +37,7 @@
   </button>
 
   <!-- Trigger/Open The Modal -->
-  <button id="myBtn">New Tier from Notebook</button>
+  <button id="btnNewNotebookTier">New Tier from Notebook</button>
 
 </div>
 
@@ -75,11 +75,10 @@
 </div>
 
 <!-- The Modal -->
-<div id="myModal" class="modal">
-
+<div id="notebook_tier_model" class="modal">
   <!-- Modal content -->
   <div class="modal-content">
-    <span class="close">&times;</span>
+    <span class="close" id="notebook_tier_model_close">&times;</span>
     <h1>Create Tier</h1>
     <p>Please specify the code to invoke to create the tier.</p>
 
@@ -90,7 +89,6 @@
     If the key is not present, the document is retained in the next tier.
       The document you return must be JSON-serializable.
     </p>
-
     <pre>
 def process_message(message):
   message['my_extracted_feature'] = my_extraction(message)
@@ -98,13 +96,11 @@ def process_message(message):
   message['accept'] = accept
   return message
     </pre>
-
-    <label for="cars">Python notebook and method:</label>
+    <label for="notebook_and_function_select">Python notebook and method:</label>
     <select name="cars" id="notebook_and_function_select"
+            name="notebook_and_function_select"
             data-bind="template: { name: 'functionTempl', foreach: available_functions() }">
     </select>
-
-
     <p>Commands to run after initializing the container. For example, required Python packages can be installed here. One command per line.</p>
     <textarea rows = "10" cols = "120" id="shell_cmds">
 # Execute these shell commands before the application starts (remove the # to uncomment), e.g.:
@@ -112,19 +108,15 @@ def process_message(message):
 # python3 -m pip install numpy==1.21.4
 # python3 -m pip install tensorflow==2.7.0
     </textarea>
-
     <script id="functionTempl" type="text/html">
       <option data-bind="value: $data, html: $data">
       </option>
     </script>
-
     <p>
     <a href="https://packages.ubuntu.com/hirsute/">Packages for Ubuntu hirsute (21.04)</a>&nbsp;&nbsp;&nbsp;
     <a href="https://pypi.org/">Python Package Index (PyPi)</a>
     </p>
-
     <button id="create_tier_from_notebook_confirm_button">Create Tier</button>
-
   </div>
 
 </div>

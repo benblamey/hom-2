@@ -270,17 +270,16 @@ window.onload = (event) => {
   //
   // console.log(demo_ih_model)
 
+  var notebookTierModalBackgroundDiv = document.getElementById("notebook_tier_model");
+  var btnNewNotebookTier = document.getElementById("btnNewNotebookTier");
+  var btnNotebookTierConfirm = document.getElementById("create_tier_from_notebook_confirm_button")
+  var btnNotebookTierModalClose = document.getElementById("notebook_tier_model_close");
 
-  // Get the modal
-  var modal = document.getElementById("myModal");
-// Get the button that opens the modal
-  var btn = document.getElementById("myBtn");
-// Get the <span> element that closes the modal
-  var span = document.getElementsByClassName("close")[0];
+  btnNotebookTierModalClose.onclick = function() {
+    notebookTierModalBackgroundDiv.style.display = "none";
+  }
 
-// When the user clicks on the button, open the modal
-  btn.onclick = function() {
-
+  btnNewNotebookTier.onclick = function() {
     document.body.style.cursor = "wait";
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://localhost:4567/available_functions');
@@ -295,12 +294,11 @@ window.onload = (event) => {
         console.log('/available_functions')
         console.log(resp)
         demo_ih_model.available_functions(resp.functions)
-        modal.style.display = "block";
+        notebookTierModalBackgroundDiv.style.display = "block";
       }
     }
   }
 
-  var btnNotebookTierConfirm = document.getElementById("create_tier_from_notebook_confirm_button")
   btnNotebookTierConfirm.onclick = function () {
     document.body.style.cursor = "wait";
 
@@ -323,25 +321,19 @@ window.onload = (event) => {
         console.log(resp)
 
         // TODO: clear the fields
-        modal.style.display = "none";
+        notebookTierModalBackgroundDiv.style.display = "none";
 
       }
     }
-
   }
 
-
-// When the user clicks on <span> (x), close the modal
-  span.onclick = function() {
-    modal.style.display = "none";
-  }
 
 // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
+//   window.onclick = function(event) {
+//     if (event.target == notebookTierModalBackgroundDiv) {
+//       notebookTierModalBackgroundDiv.style.display = "none";
+//     }
+//   }
 
 };
 
