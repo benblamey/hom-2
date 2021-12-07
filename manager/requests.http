@@ -14,6 +14,10 @@ Accept: application/json
 GET http://localhost:4567/info
 Accept: application/json
 
+### available_functions
+GET http://localhost:4567/available_functions
+Accept: application/json
+
 ### scale up
 GET http://localhost:4567/scale/0/5
 Accept: application/json

@@ -74,3 +74,15 @@ table, th, td {
 #node-editor-id {
     color: darkgray;
 }
+
+.inline_code {
+    font-family: monospace;
+    color: navy;
+    font-size: large;
+}
+
+pre {
+    font-family: monospace;
+    color: navy;
+    font-size: large;
+}

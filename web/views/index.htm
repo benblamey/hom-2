@@ -3,6 +3,7 @@
 <head>
   <title>HASTE-o-matic</title>
   <link rel='stylesheet' type='text/css' href='styles.css'>
+  <link rel='stylesheet' type='text/css' href='modal.css'>
   <script type='text/javascript' src='https://knockoutjs.com/downloads/knockout-3.5.1.debug.js'></script>
   <script type='text/javascript' src='./knockout.mapping-latest.debug.js'></script>
   <script type='text/javascript' src='./demo-ih-model.js'></script>
@@ -12,8 +13,8 @@
 <div id="treeview-container">
 
   <ul data-bind="template: { name: 'itemTmpl', foreach: $data.tiers }" id="treeview"
-      style="padding-left: 0px"
-  ></ul>
+      style="padding-left: 0px">
+  </ul>
 
   <script id="itemTmpl" type="text/html">
     <div style="background: black; padding: 3px"
@@ -34,6 +35,9 @@
   <button onclick="addJexlTier()">
     Add JEXL Tier...
   </button>
+
+  <!-- Trigger/Open The Modal -->
+  <button id="myBtn">New Tier from Notebook</button>
 
 </div>
 
@@ -69,5 +73,61 @@
   </div>
 
 </div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h1>Create Tier</h1>
+    <p>Please specify the code to invoke to create the tier.</p>
+
+    <p>
+      Your method must take a single argument (a <span class="inline_code">dict</span> representing the document).
+    Similarly, it should return a <span class="inline_code">dict</span> representing the new document (or the same document).
+      If the <span class="inline_code">dict</span> has a element with key <span class="inline_code">accept</span> (set it to <span class="inline_code">True</span> or <span class="inline_code">False</span>) this will be used to filter documents for the next tier.
+    If the key is not present, the document is retained in the next tier.
+      The document you return must be JSON-serializable.
+    </p>
+
+    <pre>
+def process_message(message):
+  message['my_extracted_feature'] = my_extraction(message)
+  accept = message['my_extracted_feature'] > 42 # True or False
+  message['accept'] = accept
+  return message
+    </pre>
+
+    <label for="cars">Python notebook and method:</label>
+    <select name="cars" id="notebook_and_function_select"
+            data-bind="template: { name: 'functionTempl', foreach: available_functions() }">
+    </select>
+
+
+    <p>Commands to run after initializing the container. For example, required Python packages can be installed here. One command per line.</p>
+    <textarea rows = "10" cols = "120" id="shell_cmds">
+# Execute these shell commands before the application starts (remove the # to uncomment), e.g.:
+# apt install -y curl
+# python3 -m pip install numpy==1.21.4
+# python3 -m pip install tensorflow==2.7.0
+    </textarea>
+
+    <script id="functionTempl" type="text/html">
+      <option data-bind="value: $data, html: $data">
+      </option>
+    </script>
+
+    <p>
+    <a href="https://packages.ubuntu.com/hirsute/">Packages for Ubuntu hirsute (21.04)</a>&nbsp;&nbsp;&nbsp;
+    <a href="https://pypi.org/">Python Package Index (PyPi)</a>
+    </p>
+
+    <button id="create_tier_from_notebook_confirm_button">Create Tier</button>
+
+  </div>
+
+</div>
+
 </body>
 </html>

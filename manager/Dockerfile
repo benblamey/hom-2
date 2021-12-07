@@ -13,7 +13,7 @@ ENV TZ=Europe/Stockholm
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Always run update when changing package list, see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
-RUN apt update ; echo 'editthistoforcerun'
+RUN apt update ; echo 'editthistoforcerun5'
 
 # install curl
 RUN apt install -y curl

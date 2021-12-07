@@ -1,15 +1,23 @@
 package com.benblamey.hom.manager;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class Util {
     static String executeShellLogAndBlock(String[] args) throws IOException, InterruptedException {
+        return  executeShellLogAndBlock(args, null, null);
+    }
+
+    static String executeShellLogAndBlock(String[] args, String[] ep, File workingDir) throws IOException, InterruptedException {
         String cmdAndArgs = String.join(" ", args);
         System.out.println("Executing " + cmdAndArgs);
         System.out.flush();
 
-        Process cmdProc = Runtime.getRuntime().exec(args);
+        Process cmdProc = Runtime.getRuntime().exec(args,
+                ep,
+                workingDir);
+
         cmdProc.waitFor();
 
         System.out.println("Process exited with code: " + cmdProc.exitValue());

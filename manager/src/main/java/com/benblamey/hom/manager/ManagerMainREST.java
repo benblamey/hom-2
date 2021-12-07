@@ -32,7 +32,7 @@ public class ManagerMainREST {
 
         spark.Spark.post("/add-tier", (req, res) -> {
             logger.info("/add-tier");
-            addHeaders(res);
+            addCrossOriginHeaders(res);
 
             JSONParser p = new JSONParser();
             String body1 = req.body();
@@ -48,7 +48,7 @@ public class ManagerMainREST {
 
         spark.Spark.post("/remove-tier", (req, res) -> {
             logger.info("/remove-tier");
-            addHeaders(res);
+            addCrossOriginHeaders(res);
             if (manager.getTiers().isEmpty()) {
                 return false;
             } else {
@@ -59,7 +59,7 @@ public class ManagerMainREST {
 
         spark.Spark.get("/info", (req, res) -> {
             logger.info("/info");
-            addHeaders(res);
+            addCrossOriginHeaders(res);
             List<ITier> tiers = manager.getTiers();
             List<Offsets.OffsetInfo> offsetInfos = Offsets.fetchOffsets();
             List<Map> tierJsonMaps = new ArrayList<>();
@@ -86,10 +86,23 @@ public class ManagerMainREST {
             return json;
         });
 
+        spark.Spark.get("/available_functions", (req, res) -> {
+            logger.info("/available_functions");
+            addCrossOriginHeaders(res);
+
+            Map<String, List> tiers1 = Map.of(
+                    "functions",
+                    NotebookScraper.getFunctions(CommandLineArguments.getDataPath()));
+
+            String json = JSONObject.toJSONString(tiers1);
+            logger.debug(json);
+            return json;
+        });
+
         spark.Spark.get("/info-fake", (req, res) -> {
             logger.info("/info-fake");
             // to allow testing from localhost. not for public/prod. TODO: tighten this up
-            addHeaders(res);
+            addCrossOriginHeaders(res);
 
             String fake_response = "{\n" +
                     "  \"tiers\": [\n" +
@@ -133,7 +146,7 @@ public class ManagerMainREST {
         spark.Spark.get("/sample/:topicid", (req, res) -> {
             String topicID = req.params(":topicid");
 
-            addHeaders(res);
+            addCrossOriginHeaders(res);
 
             ConsumerRecords<Long, String> sample;
             if (sampleByUniqueTierID.containsKey(topicID)) {
@@ -172,8 +185,16 @@ public class ManagerMainREST {
             int tier = Integer.parseInt(req.params(":tier"));
             int scale = Integer.parseInt(req.params(":scale"));
             logger.info("scaling tier " + tier + " to " + scale);
-            addHeaders(res);
+            addCrossOriginHeaders(res);
             manager.getTiers().get(tier).setScale(scale);
+            return true;
+        });
+
+
+        spark.Spark.post("/create_notebook_tier", (req, res) -> {
+            addCrossOriginHeaders(res);
+            logger.info("/create_notebook_tier");
+            // TODO
             return true;
         });
 
@@ -193,7 +214,7 @@ public class ManagerMainREST {
 
     }
 
-    private static void addHeaders(Response res) {
+    private static void addCrossOriginHeaders(Response res) {
         res.header("Access-Control-Allow-Origin", "*");
     }
 

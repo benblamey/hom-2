@@ -175,7 +175,14 @@ spec:
     imagePullPolicy: Never
     name: manager
     command: ["java"]
-    args: ["-cp","output.jar","-DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092","com.benblamey.hom.manager.ManagerMainREST"]
+    args: ["-cp","output.jar","-DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092","-DDATA_PATH=/data","com.benblamey.hom.manager.ManagerMainREST"]
+    volumeMounts:
+    - mountPath: /data
+      name: volume-hom-pv
+  volumes:
+  - name: volume-hom-pv
+    persistentVolumeClaim:
+      claimName: hom-pv-claim
   restartPolicy: Always
 
 

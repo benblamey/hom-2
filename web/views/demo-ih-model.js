@@ -214,13 +214,15 @@ function refreshTiers() {
         }
       }
       if (!demo_ih_model.tiers().includes(demo_ih_model.selectedNode())) {
-        oldIndex = demo_ih_model.selectedNode().tierIndex()
         if (demo_ih_model.tiers().length == 0) {
           onNewNodeSelected(null);
-        } else  if (oldIndex < demo_ih_model.tiers().length) {
-          onNewNodeSelected(demo_ih_model.tiers()[oldIndex]);
         } else {
-          onNewNodeSelected(demo_ih_model.tiers()[demo_ih_model.tiers().length - 1]);
+          oldIndex = demo_ih_model.selectedNode().tierIndex()
+          if (oldIndex < demo_ih_model.tiers().length) {
+            onNewNodeSelected(demo_ih_model.tiers()[oldIndex]);
+          } else {
+            onNewNodeSelected(demo_ih_model.tiers()[demo_ih_model.tiers().length - 1]);
+          }
         }
       }
 
@@ -242,6 +244,7 @@ window.onload = (event) => {
   console.log("window.onload")
   demo_ih_model.tiers = ko.observableArray();
   demo_ih_model.selectedNode = ko.observable();
+  demo_ih_model.available_functions = ko.observableArray();
 
   refreshTiers();
 
@@ -267,6 +270,78 @@ window.onload = (event) => {
   //
   // console.log(demo_ih_model)
 
+
+  // Get the modal
+  var modal = document.getElementById("myModal");
+// Get the button that opens the modal
+  var btn = document.getElementById("myBtn");
+// Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+  btn.onclick = function() {
+
+    document.body.style.cursor = "wait";
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:4567/available_functions');
+    xhr.send();
+    xhr.onload = function () {
+      document.body.style.cursor = "default";
+
+      if (xhr.status != 200) {
+        alert(`Error ${xhr.status}: ${xhr.statusText}`);
+      } else {
+        resp = JSON.parse(xhr.responseText)
+        console.log('/available_functions')
+        console.log(resp)
+        demo_ih_model.available_functions(resp.functions)
+        modal.style.display = "block";
+      }
+    }
+  }
+
+  var btnNotebookTierConfirm = document.getElementById("create_tier_from_notebook_confirm_button")
+  btnNotebookTierConfirm.onclick = function () {
+    document.body.style.cursor = "wait";
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://localhost:4567/create_notebook_tier');
+    xhr.send(
+      JSON.stringify({
+        "notebook_and_function": document.getElementById("notebook_and_function_select").value,
+        "shell_cmds": document.getElementById("shell_cmds").value
+      })
+    );
+    xhr.onload = function () {
+      document.body.style.cursor = "default";
+
+      if (xhr.status != 200) {
+        alert(`Error ${xhr.status}: ${xhr.statusText}`);
+      } else {
+        resp = JSON.parse(xhr.responseText)
+        console.log('/create_notebook_tier')
+        console.log(resp)
+
+        // TODO: clear the fields
+        modal.style.display = "none";
+
+      }
+    }
+
+  }
+
+
+// When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+
+// When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
 
 };
 

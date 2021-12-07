@@ -74,4 +74,5 @@ usage: __main__.py [-h] [--debug] [--show-config] [--show-config-json] [--genera
 
 
 TODO:
+startup list of commands.
 jupyter nbconvert --to script /data/example.ipynb 

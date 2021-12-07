@@ -34,10 +34,10 @@ producer = KafkaProducer(bootstrap_servers=kakfa_bootstrap_server)
 
 # TODO: have one thread listen for shutdown, and exit gracefully.
 
-import_spec = importlib.util.spec_from_file_location("module.name", "/data/" + "example.py")
+import_spec = importlib.util.spec_from_file_location("module.name", "/data/" + python_filename)
 imported_module = importlib.util.module_from_spec(import_spec)
 loaded_module = import_spec.loader.exec_module(imported_module)
-users_function = getattr(imported_module, "hej")
+users_function = getattr(imported_module, python_function)
 
 # result = users_function({"foo": 1})
 # print(result)
