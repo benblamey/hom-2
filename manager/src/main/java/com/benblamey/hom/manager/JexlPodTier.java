@@ -6,9 +6,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public class JexlTier implements ITier {
+@Deprecated
+public class JexlPodTier implements ITier {
 
-    Logger logger = LoggerFactory.getLogger(JexlTier.class);
+    Logger logger = LoggerFactory.getLogger(JexlPodTier.class);
 
     // Increasing this will probably break the code where we count up the offsets.
     // Assumes only 1 partition.
@@ -27,7 +28,7 @@ public class JexlTier implements ITier {
         return uuid.toString();
     }
 
-    public JexlTier(String jexlExpression, int index, String inputTopic) throws IOException, InterruptedException {
+    public JexlPodTier(String jexlExpression, int index, String inputTopic) throws IOException, InterruptedException {
         this.friendlyTierId = Integer.toString(index);
         this.jexlExpression = jexlExpression.toString();
         this.uniqueTierId = generateUniqueTierID();

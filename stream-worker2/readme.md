@@ -74,5 +74,7 @@ usage: __main__.py [-h] [--debug] [--show-config] [--show-config-json] [--genera
 
 
 TODO:
+first input tier is a bit weird
+remove old deployment
 startup list of commands.
 jupyter nbconvert --to script /data/example.ipynb 
