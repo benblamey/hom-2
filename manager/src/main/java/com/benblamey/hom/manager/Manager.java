@@ -62,6 +62,13 @@ public class Manager {
         m_tiers.add(tier);
     }
 
+    public void addNotebookTier(String filenameAndFunction) throws IOException, InterruptedException {
+        String inputTopic = m_tiers.isEmpty() ? "haste-input-data" : m_tiers.get(m_tiers.size() - 1).getOutputTopic();
+        int tierIndex = m_tiers.size();
+        ITier tier = new PyWorkerDeploymentTier(filenameAndFunction, tierIndex, inputTopic);
+        m_tiers.add(tier);
+    }
+
     public void removeTier() throws IOException, InterruptedException {
         if (m_tiers.isEmpty()) {
             throw new RuntimeException("no tiers exist to remove");

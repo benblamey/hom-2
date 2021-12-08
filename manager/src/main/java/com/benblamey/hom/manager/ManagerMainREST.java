@@ -194,7 +194,16 @@ public class ManagerMainREST {
         spark.Spark.post("/create_notebook_tier", (req, res) -> {
             addCrossOriginHeaders(res);
             logger.info("/create_notebook_tier");
-            // TODO
+
+            JSONParser p = new JSONParser();
+            String body1 = req.body();
+            logger.info(body1);
+
+            JSONObject body = (JSONObject) p.parse(body1);
+            String notebook_and_function = (String) body.get("notebook_and_function");
+
+            manager.addNotebookTier(notebook_and_function);
+
             return true;
         });
 

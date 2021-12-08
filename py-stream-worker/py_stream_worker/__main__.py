@@ -7,7 +7,7 @@ import importlib.util
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.DEBUG)
 
-# python3 -m py_stream_worker kafka-service:9092 haste-input-data groupid foo example.py hej
+# python3 -m py_stream_worker kafka-service:9092 haste-input-data output-topic-foo groupidfoo example.py hej
 
 #  TODO: kafka.coordinator.consumer - WARNING - group_id is None: disabling auto-commit.
 
@@ -15,7 +15,7 @@ kakfa_bootstrap_server = sys.argv[1]
 input_topic = sys.argv[2]
 output_topic = sys.argv[3]
 group_id = sys.argv[4]
-python_filename = sys.argv[5]  # foo.py
+python_filepath = sys.argv[5]  # some-guid.py
 python_function = sys.argv[6]  # bar
 
 logging.info("Command line arguments:")
@@ -24,7 +24,7 @@ logging.info({
     'input_topic': input_topic,
     'output_topic': output_topic,
     'group_id': group_id,
-    'python_filename': python_filename,
+    'python_filepath': python_filepath,
     'python_function': python_function,
 })
 
@@ -34,7 +34,7 @@ producer = KafkaProducer(bootstrap_servers=kakfa_bootstrap_server)
 
 # TODO: have one thread listen for shutdown, and exit gracefully.
 
-import_spec = importlib.util.spec_from_file_location("module.name", "/data/" + python_filename)
+import_spec = importlib.util.spec_from_file_location("my_notebook", python_filepath)
 imported_module = importlib.util.module_from_spec(import_spec)
 loaded_module = import_spec.loader.exec_module(imported_module)
 users_function = getattr(imported_module, python_function)

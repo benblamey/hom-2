@@ -48,41 +48,9 @@ spec:
   resources:
     requests:
       storage: 1Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: py-stream-worker-deployment
-  labels:
-    app: py-stream-worker
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: py-stream-worker
-  template:
-    metadata:
-      labels:
-        app: py-stream-worker
-    spec:
-      containers:
-      - name: py-stream-worker
-        image: hom-impl-2.py-stream-worker
-        # image is local-only atm.
-        imagePullPolicy: Never
-        command: ["bash"]
-        args: ["-ec","while true; do echo -n .; sleep 1; done"]
-        volumeMounts:
-        - mountPath: /data
-          name: volume-hom-pv
-      volumes:
-      - name: volume-hom-pv
-        persistentVolumeClaim:
-          claimName: hom-pv-claim
-      restartPolicy: Always
-
 
 ---
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -123,7 +91,7 @@ spec:
     imagePullPolicy: Never
     name: notebook
     command: ["python3"]
-    args: ["-m","jupyterlab","--no-browser","--NotebookApp.password='argon2:$argon2id$v=19$m=10240,t=10,p=8$LKoe+YVbK+qMsaH87iMiLQ$XroRerX0xeyPoBB1Ik2odA'","--allow-root","--notebook-dir","/data"]
+    args: ["-m","jupyterlab","--no-browser","--ServerApp.password='argon2:$argon2id$v=19$m=10240,t=10,p=8$LKoe+YVbK+qMsaH87iMiLQ$XroRerX0xeyPoBB1Ik2odA'","--allow-root","--notebook-dir","/data"]
 #    command: ["bash"]
 #    args: ["-ec","while true; do; echo -n .; sleep 1; done"]
     volumeMounts:

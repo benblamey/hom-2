@@ -307,7 +307,6 @@ window.onload = (event) => {
     xhr.send(
       JSON.stringify({
         "notebook_and_function": document.getElementById("notebook_and_function_select").value,
-        "shell_cmds": document.getElementById("shell_cmds").value
       })
     );
     xhr.onload = function () {

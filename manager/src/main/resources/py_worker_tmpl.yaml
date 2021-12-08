@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $deployment_name
+  labels:
+    app: $label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: $label
+  template:
+    metadata:
+      labels:
+        app: $label
+    spec:
+      containers:
+      - name: $container_name
+        image: hom-impl-2.py-stream-worker
+        # image is local-only atm.
+        imagePullPolicy: Never
+        command: [$cmd]
+        args: [$args]
+        volumeMounts:
+        - mountPath: /data
+          name: volume-hom-pv
+      volumes:
+      - name: volume-hom-pv
+        persistentVolumeClaim:
+          claimName: hom-pv-claim
+      restartPolicy: Always

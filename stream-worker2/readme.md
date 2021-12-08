@@ -15,6 +15,9 @@ kubectl port-forward --address localhost pods/notebook 8888:8888
 Stream demo data (and attach):
 kubectl delete pod demo-data ; kubectl run demo-data --image hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- java -cp output.jar -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain 
 
+
+kubectl delete pod/demo-data ; kubectl run demo-data --image hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- bash -c "while true; do echo -n .; sleep 1; done"
+
 Stream process data with JEXL (and attach):
 kubectl delete pod engine-1 ; kubectl run engine-1 --image hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- java -cp output.jar -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 -DKAFKA_APPLICATION_ID=app-hom-tier-3 -DINPUT_TOPIC=haste-input-data -DOUTPUT_TOPIC=hom-tier-3 -DJEXL_EXPRESSION="data.foo > 42" com.benblamey.hom.engine.PipelineEngineMain 
 
@@ -37,11 +40,9 @@ hej-hom-impl-foo
 port forward, Run this each time the kafka is started for local debugging:
 kubectl port-forward --address localhost pods/kafka 19092:19092
 
-
 Get shell inside kafka pod:
 kubectl exec --stdin --tty kafka -- /bin/bash
 kubectl exec --stdin --tty notebook -- /bin/bash
-
 
 need --privileged=true to do mounting. see https://stackoverflow.com/questions/36553617/how-do-i-mount-bind-inside-a-docker-container
 docker run -i --tty --privileged=true c014e6306fdd /bin/bash
@@ -70,11 +71,9 @@ usage: __main__.py [-h] [--debug] [--show-config] [--show-config-json] [--genera
 [--keyfile ServerApp.keyfile] [--certfile ServerApp.certfile] [--client-ca ServerApp.client_ca] [--notebook-dir ServerApp.root_dir] [--preferred-dir ServerApp.preferred_dir]
 [--browser ServerApp.browser] [--pylab ServerApp.pylab] [--gateway-url GatewayClient.url] [--watch [LabApp.watch]] [--app-dir LabApp.app_dir]
 [extra_args ...]
-    
-
 
 TODO:
 first input tier is a bit weird
-remove old deployment
-startup list of commands.
-jupyter nbconvert --to script /data/example.ipynb 
+sampling.
+    have the manager, on tier creation, create a listener which streams 500 elements to a file.
+    also, create a python notebook from a template, with the filename pre-loaded. 
