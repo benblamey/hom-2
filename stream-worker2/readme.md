@@ -32,7 +32,6 @@ kubectl port-forward --address localhost pods/manager 4567:4567
 TODO:
 Notebook password is:
 hej-hom-impl-foo
-,"--NotebookApp.password", "argon2:$argon2id$v=19$m=10240,t=10,p=8$LKoe+YVbK+qMsaH87iMiLQ$XroRerX0xeyPoBB1Ik2odA",
 (To generate new password hash: from notebook.auth import passwd; passwd() )
 
 ---
@@ -76,4 +75,7 @@ TODO:
 first input tier is a bit weird
 sampling.
     have the manager, on tier creation, create a listener which streams 500 elements to a file.
-    also, create a python notebook from a template, with the filename pre-loaded. 
+    also, create a python notebook from a template, with the filename pre-loaded.
+Visualization in the notebook
+clean up web GUI, locking, etc.
+Deployment steps

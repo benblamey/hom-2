@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import static org.apache.logging.log4j.core.util.Loader.getClassLoader;
 
@@ -44,5 +45,10 @@ public class Util {
     static String getResourceAsStringFromUTF8(String name) throws IOException {
         String s = new String(getClassLoader().getResourceAsStream(name).readAllBytes(), StandardCharsets.UTF_8);
         return s;
+    }
+
+    static String generateGUID() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 }

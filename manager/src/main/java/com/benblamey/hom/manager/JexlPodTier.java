@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Deprecated
-public class JexlPodTier implements ITier {
+public class JexlPodTier extends Tier {
 
     Logger logger = LoggerFactory.getLogger(JexlPodTier.class);
 
@@ -16,24 +16,14 @@ public class JexlPodTier implements ITier {
     private static final int DEFAULT_WORKERS_PER_CONTAINER_TIER = 1;
 
     ArrayList<String> podNames = new ArrayList<>();
-    String friendlyTierId; // Friendly. Doesn't need to be unique
     String jexlExpression;
-    String uniqueTierId;
     String inputTopic;
-    String outputTopic;
     String kafkaApplicationID;
 
-    private static String generateUniqueTierID() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-    }
-
     public JexlPodTier(String jexlExpression, int index, String inputTopic) throws IOException, InterruptedException {
-        this.friendlyTierId = Integer.toString(index);
+        super(index);
         this.jexlExpression = jexlExpression.toString();
-        this.uniqueTierId = generateUniqueTierID();
         this.inputTopic = inputTopic;
-        this.outputTopic = "hom-topic-" + this.friendlyTierId + "-" + this.uniqueTierId;
         this.kafkaApplicationID = "app-hom-tier-" + this.friendlyTierId + "-" + this.uniqueTierId;
         this.podNames = new ArrayList<String>();
 
@@ -81,11 +71,6 @@ public class JexlPodTier implements ITier {
     @Override
     public void remove() throws IOException, InterruptedException {
         this.setScale(0);
-    }
-
-    @Override
-    public String getOutputTopic() {
-        return this.outputTopic;
     }
 
     @Override

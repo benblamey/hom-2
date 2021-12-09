@@ -342,7 +342,8 @@ function getSample(node) {
   document.body.style.cursor = "wait";
   let xhr = new XMLHttpRequest();
   xhr.open('GET', 'http://localhost:4567/sample/' + node.outputTopic());
-  xhr.send();
+  // TODO: remove all the sampling stuff from here?
+  //xhr.send();
   xhr.onload = function () {
     document.body.style.cursor = "default";
 
@@ -378,7 +379,17 @@ function removeTier() {
   }
 }
 
-
+function addBaseTier() {
+  topic = window.prompt(`Choose input Kafka topic:`, "haste-input-data");
+  document.body.style.cursor = "wait";
+  let xhr = new XMLHttpRequest();
+  xhr.open('POST', 'http://localhost:4567/add-base-tier/' + topic);
+  xhr.send();
+  xhr.onload = function () {
+    document.body.style.cursor = "default";
+    refreshTiers();
+  }
+}
 
 function addJexlTier() {
   expr = window.prompt(`Choose JEXL expression:`, "data.foo > 42");

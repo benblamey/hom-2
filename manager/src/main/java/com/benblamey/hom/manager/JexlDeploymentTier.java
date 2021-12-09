@@ -6,29 +6,19 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public class JexlDeploymentTier implements ITier {
+public class JexlDeploymentTier extends Tier {
 
     Logger logger = LoggerFactory.getLogger(JexlDeploymentTier.class);
 
     private final String name; // name of the deployment, used in the YAML
-    String friendlyTierId; // Friendly. Doesn't need to be unique
     String jexlExpression;
-    String uniqueTierId;
-    String inputTopic;
-    String outputTopic;
+    final String inputTopic;
     String kafkaApplicationID;
 
-    private static String generateUniqueTierID() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-    }
-
     public JexlDeploymentTier(String jexlExpression, int index, String inputTopic) throws IOException, InterruptedException {
-        this.friendlyTierId = Integer.toString(index);
+        super(index);
         this.jexlExpression = jexlExpression.toString();
-        this.uniqueTierId = generateUniqueTierID();
         this.inputTopic = inputTopic;
-        this.outputTopic = "hom-topic-" + this.friendlyTierId + "-" + this.uniqueTierId;
         this.kafkaApplicationID = "app-hom-tier-" + this.friendlyTierId + "-" + this.uniqueTierId;
 
         this.name = "engine-" + friendlyTierId + "-" + uniqueTierId;

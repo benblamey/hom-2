@@ -32,12 +32,20 @@
     Refresh...
   </button>
 
-  <button onclick="addJexlTier()">
-    Add JEXL Tier...
-  </button>
+  <div data-bind="visible: (demo_ih_model.tiers().length == 0)">
+    <button onclick="addBaseTier()">
+      Add Input Tier...
+    </button>
+  </div>
 
-  <!-- Trigger/Open The Modal -->
-  <button id="btnNewNotebookTier">New Tier from Notebook</button>
+  <div data-bind="visible: (demo_ih_model.tiers().length > 0)">
+    <button onclick="addJexlTier()">
+      Add JEXL Tier...
+    </button>
+
+    <!-- Trigger/Open The Modal -->
+    <button id="btnNewNotebookTier">New Tier from Notebook...</button>
+  </div>
 
 </div>
 
@@ -64,11 +72,11 @@
       </button>
     </div>
 
-    <div>
-      Output Data Sample:
-    </div>
-      <code data-bind="html:sampleJSON()"
-            style="border: lightgrey 1px solid; margin: 5px"></code>
+<!--    <div>-->
+<!--      Output Data Sample:-->
+<!--    </div>-->
+<!--      <code data-bind="html:sampleJSON()"-->
+<!--            style="border: lightgrey 1px solid; margin: 5px"></code>-->
 
   </div>
 

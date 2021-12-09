@@ -10,9 +10,9 @@ public class Manager {
 
     Logger logger = LoggerFactory.getLogger(Manager.class);
 
-    private final List<ITier> m_tiers = new ArrayList<ITier>();
+    private final List<Tier> m_tiers = new ArrayList<Tier>();
 
-    public List<ITier> getTiers() {
+    public List<Tier> getTiers() {
         return m_tiers;
     }
 
@@ -56,16 +56,26 @@ public class Manager {
     }
 
     public void addJexlTier(String jexlExpression) throws IOException, InterruptedException {
+        // TODO
+//        if (!m_tiers.isEmpty()) {
+//            throw new RuntimeException("need a base tier");
+//        }
+
         String inputTopic = m_tiers.isEmpty() ? "haste-input-data" : m_tiers.get(m_tiers.size() - 1).getOutputTopic();
         int tierIndex = m_tiers.size();
-        ITier tier = new JexlDeploymentTier(jexlExpression, tierIndex, inputTopic);
+        Tier tier = new JexlDeploymentTier(jexlExpression, tierIndex, inputTopic);
         m_tiers.add(tier);
     }
 
     public void addNotebookTier(String filenameAndFunction) throws IOException, InterruptedException {
+        // TODO
+//        if (!m_tiers.isEmpty()) {
+//            throw new RuntimeException("need a base tier");
+//        }
+
         String inputTopic = m_tiers.isEmpty() ? "haste-input-data" : m_tiers.get(m_tiers.size() - 1).getOutputTopic();
         int tierIndex = m_tiers.size();
-        ITier tier = new PyWorkerDeploymentTier(filenameAndFunction, tierIndex, inputTopic);
+        Tier tier = new PyWorkerDeploymentTier(filenameAndFunction, tierIndex, inputTopic);
         m_tiers.add(tier);
     }
 
@@ -74,11 +84,19 @@ public class Manager {
             throw new RuntimeException("no tiers exist to remove");
         }
 
-        ITier tier = m_tiers.get(m_tiers.size() - 1);
+        Tier tier = m_tiers.get(m_tiers.size() - 1);
 
         tier.remove();
         // TODO - remove old kafka data?
 
         m_tiers.remove(tier);
+    }
+
+    public void addBaseTier(String topicID) {
+        if (!getTiers().isEmpty()) {
+            throw new RuntimeException("Can only add base tier if no existing tiers");
+        }
+        Tier t = new InputTier(topicID);
+        m_tiers.add(t);
     }
 }

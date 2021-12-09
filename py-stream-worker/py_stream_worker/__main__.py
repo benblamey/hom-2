@@ -29,7 +29,10 @@ logging.info({
 })
 
 read_a_message = False
-consumer = KafkaConsumer(input_topic, bootstrap_servers=kakfa_bootstrap_server, group_id=group_id)
+consumer = KafkaConsumer(input_topic,
+                         bootstrap_servers=kakfa_bootstrap_server,
+                         group_id=group_id,
+                         auto_offset_reset='earliest')
 producer = KafkaProducer(bootstrap_servers=kakfa_bootstrap_server)
 
 # TODO: have one thread listen for shutdown, and exit gracefully.
@@ -59,9 +62,9 @@ for msg in consumer:
     output_dict = users_function(input_dict)
     logging.debug(output_dict)
 
-    accept = output_dict['accept']
+    accept = output_dict.get('accept', True)
     if not accept:
-        logging.debug("skipping object - returned accept:" + accept)
+        logging.debug("skipping object: " + msg.value)
         continue
     del output_dict['accept']
 

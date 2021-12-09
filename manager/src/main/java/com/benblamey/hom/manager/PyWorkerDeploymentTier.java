@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public class PyWorkerDeploymentTier implements ITier {
+public class PyWorkerDeploymentTier extends Tier {
 
     // For debugging
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -20,24 +20,13 @@ public class PyWorkerDeploymentTier implements ITier {
     private final String name; // name of the deployment, used in the YAML
     private final String pythonFilenameAndFunction;
 
-    String friendlyTierId; // Friendly. Doesn't need to be unique
-    String uniqueTierId;
     String inputTopic;
-    String outputTopic;
     String kafkaApplicationID;
 
-    private static String generateUniqueTierID() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-    }
-
     public PyWorkerDeploymentTier(String pythonFilenameAndFunction, int index, String inputTopic) throws IOException, InterruptedException {
-        this.friendlyTierId = Integer.toString(index);
-        this.uniqueTierId = generateUniqueTierID();
+        super(index);
         this.inputTopic = inputTopic;
-        this.outputTopic = "hom-topic-" + this.friendlyTierId + "-" + this.uniqueTierId;
         this.kafkaApplicationID = "app-hom-tier-" + this.friendlyTierId + "-" + this.uniqueTierId;
-
         this.name = "engine-" + friendlyTierId + "-" + uniqueTierId;
         this.pythonFilenameAndFunction = pythonFilenameAndFunction;
 
@@ -66,11 +55,6 @@ public class PyWorkerDeploymentTier implements ITier {
     @Override
     public void remove() throws IOException, InterruptedException {
         Util.executeShellLogAndBlock(new String[]{"kubectl", "delete", "deployment", this.name});
-    }
-
-    @Override
-    public String getOutputTopic() {
-        return this.outputTopic;
     }
 
     @Override

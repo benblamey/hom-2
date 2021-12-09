@@ -30,9 +30,26 @@ public class ManagerMainREST {
         // We use the Spark micro-framework to serve the web requests.
         // http://sparkjava.com/documentation.html#getting-started
 
+        spark.Spark.post("/add-base-tier/:topicid", (req, res) -> {
+            String topicID = req.params(":topicid");
+                    logger.info("/add-tier-base");
+                    addCrossOriginHeaders(res);
+
+                    if (!manager.getTiers().isEmpty()) {
+                        throw new RuntimeException("Can only add base tier if no existing tiers");
+                    }
+                    manager.addBaseTier(topicID);
+
+                    return true;
+                });
+
         spark.Spark.post("/add-tier", (req, res) -> {
             logger.info("/add-tier");
             addCrossOriginHeaders(res);
+
+            if (manager.getTiers().isEmpty()) {
+                throw new RuntimeException("Can only add base tier if no existing tiers");
+            }
 
             JSONParser p = new JSONParser();
             String body1 = req.body();
@@ -60,11 +77,11 @@ public class ManagerMainREST {
         spark.Spark.get("/info", (req, res) -> {
             logger.info("/info");
             addCrossOriginHeaders(res);
-            List<ITier> tiers = manager.getTiers();
+            List<Tier> tiers = manager.getTiers();
             List<Offsets.OffsetInfo> offsetInfos = Offsets.fetchOffsets();
             List<Map> tierJsonMaps = new ArrayList<>();
 
-            for (ITier t : tiers) {
+            for (Tier t : tiers) {
                 Long sumOfCurrentOffsets = 0L;
                 Long sumOfLogEndOffsets = 0L;
                 Map<String, Object> jsonMap = t.toMap();
@@ -144,6 +161,7 @@ public class ManagerMainREST {
         Map<String, ConsumerRecords<Long, String>> sampleByUniqueTierID = new HashMap<String, ConsumerRecords<Long, String>>();
 
         spark.Spark.get("/sample/:topicid", (req, res) -> {
+            // TODO: remove all the sampling stuff from here?
             String topicID = req.params(":topicid");
 
             addCrossOriginHeaders(res);
@@ -194,6 +212,10 @@ public class ManagerMainREST {
         spark.Spark.post("/create_notebook_tier", (req, res) -> {
             addCrossOriginHeaders(res);
             logger.info("/create_notebook_tier");
+
+            if (manager.getTiers().isEmpty()) {
+                throw new RuntimeException("Can only add base tier if no existing tiers");
+            }
 
             JSONParser p = new JSONParser();
             String body1 = req.body();
