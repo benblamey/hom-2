@@ -153,6 +153,19 @@ spec:
       claimName: hom-pv-claim
   restartPolicy: Always
 
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+spec:
+  containers:
+  - image: hom-impl-2.web
+    # image is local-only atm.
+    imagePullPolicy: Never
+    name: static-web
+  restartPolicy: Always
 
 
 ---
@@ -171,6 +184,22 @@ spec:
       protocol: TCP
       port: 9092
       targetPort: 9092
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-web-service
+spec:
+  selector:
+    # This matches the label for the pods above.
+    app: static-web
+  ports:
+    - name: static-web
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+
 
 ---
 apiVersion: v1
