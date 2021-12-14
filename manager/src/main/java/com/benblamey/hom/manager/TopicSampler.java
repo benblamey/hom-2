@@ -18,6 +18,8 @@ public class TopicSampler {
     private static final int RECORD_COUNT = 500;
     private static final Logger logger = LoggerFactory.getLogger(TopicSampler.class);
 
+    // TODO: these members can be static.
+
     public TopicSampler(String topic, String outputFilepathJsonl) {
         // "Start and forget"
         Thread t = new Thread(null,

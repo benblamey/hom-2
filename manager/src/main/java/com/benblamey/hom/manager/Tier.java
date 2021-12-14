@@ -9,14 +9,12 @@ public abstract class Tier {
     String uniqueTierId;
     String friendlyTierId;
 
-
-
     // Intended only for the 'InputTier'
     Tier(int index, String outputTopic) {
         this.friendlyTierId = Integer.toString(index);
         this.uniqueTierId = Util.generateGUID();
         this.outputTopic = outputTopic;
-        new TopicSampler(outputTopic, "/data/sample-tier-" + friendlyTierId + ".jsonl");
+        init();
     }
 
     // For the other kinds of Tier, where the output topic is uniquely-generated.
@@ -24,7 +22,19 @@ public abstract class Tier {
         this.friendlyTierId = Integer.toString(index);
         this.uniqueTierId = Util.generateGUID();
         this.outputTopic = "hom-topic-" + this.friendlyTierId + "-" + this.uniqueTierId;
-        new TopicSampler(outputTopic, "/data/sample-tier-" + friendlyTierId + ".jsonl");
+        init();
+    }
+
+    private void init() {
+        String sampleJsonlPath = "/data/sample-tier-" + friendlyTierId + ".jsonl";
+        new TopicSampler(outputTopic, sampleJsonlPath);
+
+        try {
+            NotebooksFromTemplates.AnalyzeTierNotebookFromTemplate(sampleJsonlPath,
+                    "/data/analyze-tier-" + friendlyTierId + ".ipynb");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     abstract Map<String, Object> toMap();
