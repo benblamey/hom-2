@@ -23,7 +23,7 @@ spec:
   #  path: /Users/benblamey/projects/github-me/hom-impl-2/persistentvolume
   # Server like this:
     path: /home/ubuntu/hom-2/persistentvolume
- NFS like this:
+# NFS like this:
 #  nfs:
 #    server: 192.168.0.5
 #    path: /opt/foo
@@ -75,7 +75,7 @@ spec:
     volumeMounts:
     - mountPath: /tmp/zookeeper
       name: volume-hom-pv
-      subpath: zookeeper
+      subPath: zookeeper
   volumes:
   - name: volume-hom-pv
     persistentVolumeClaim:
@@ -127,7 +127,7 @@ spec:
     volumeMounts:
     - mountPath: /tmp/kafka-logs
       name: volume-hom-pv
-      subpath: kafka-logs
+      subPath: kafka-logs
   volumes:
   - name: volume-hom-pv
     persistentVolumeClaim:
