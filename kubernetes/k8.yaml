@@ -19,14 +19,19 @@ spec:
   storageClassName: "manual"
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /Users/benblamey/projects/github-me/hom-impl-2/persistentvolume
-# NFS like this:
+  # Bens macbook pro like this:
+  #  path: /Users/benblamey/projects/github-me/hom-impl-2/persistentvolume
+  # Server like this:
+    path: /home/ubuntu/hom-2/persistentvolume
+ NFS like this:
 #  nfs:
 #    server: 192.168.0.5
 #    path: /opt/foo
 #  mountOptions:
 # MacOSX uses NFS3.
 #        - nfsvers=3
+
+# Use this for docker desktop
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -34,7 +39,8 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - docker-desktop
+          - hom-1-benblamey
+#          - docker-desktop
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -62,19 +68,18 @@ spec:
   containers:
   - image: hom-impl-2.kafka
     # image is local-only atm.
-    imagePullPolicy: Never
+    imagePullPolicy: Always
     name: zookeeper
     command: ["bash"]
     args: ["-ec","./bin/zookeeper-server-start.sh config/zookeeper.properties"]
     volumeMounts:
     - mountPath: /tmp/zookeeper
-      name: dev-data-volume-zookeeper
+      name: volume-hom-pv
+      subpath: zookeeper
   volumes:
-  - name: dev-data-volume-zookeeper
-    hostPath:
-      # dev purpose - location on host
-      path: /Users/benblamey/projects/github-me/hom-impl-2/kafka/zookeeper-data
-      type: Directory
+  - name: volume-hom-pv
+    persistentVolumeClaim:
+      claimName: hom-pv-claim
   restartPolicy: Always
 
 ---
@@ -88,7 +93,7 @@ spec:
   containers:
   - image: hom-impl-2.notebook
     # image is local-only atm.
-    imagePullPolicy: Never
+    imagePullPolicy: Always
     name: notebook
     command: ["python3"]
     args: ["-m","jupyterlab","--no-browser","--ServerApp.password='argon2:$argon2id$v=19$m=10240,t=10,p=8$LKoe+YVbK+qMsaH87iMiLQ$XroRerX0xeyPoBB1Ik2odA'","--allow-root","--notebook-dir","/data"]
@@ -115,19 +120,18 @@ spec:
   containers:
   - image: hom-impl-2.kafka
     # image is local-only atm.
-    imagePullPolicy: Never
+    imagePullPolicy: Always
     name: kafka
     command: ["bash"]
     args: ["-ec","./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect=zookeeper-service:2181 --override listeners=ALICE://0.0.0.0:9092,BOB://0.0.0.0:19092 --override advertised.listeners=ALICE://kafka-service:9092,BOB://localhost:19092 --override listener.security.protocol.map=ALICE:PLAINTEXT,BOB:PLAINTEXT --override inter.broker.listener.name=ALICE  --override log.retention.minutes=10 --override auto.create.topics.enable=true --override num.partitions=1;"]
     volumeMounts:
     - mountPath: /tmp/kafka-logs
-      name: dev-data-volume-kafka
+      name: volume-hom-pv
+      subpath: kafka-logs
   volumes:
-  - name: dev-data-volume-kafka
-    hostPath:
-      # dev purpose - location on host
-      path: /Users/benblamey/projects/github-me/hom-impl-2/kafka/kafka-data
-      type: Directory
+  - name: volume-hom-pv
+    persistentVolumeClaim:
+      claimName: hom-pv-claim
   restartPolicy: Always
 
 ---
@@ -136,11 +140,13 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: manager
+  labels:
+    name: manager
 spec:
   containers:
   - image: hom-impl-2.manager
     # image is local-only atm.
-    imagePullPolicy: Never
+    imagePullPolicy: Always
     name: manager
     command: ["java"]
     args: ["-cp","output.jar","-DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092","-DDATA_PATH=/data","com.benblamey.hom.manager.ManagerMainREST"]
@@ -159,12 +165,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: static-web
+  labels:
+    name: static-web
 spec:
   containers:
   - image: hom-impl-2.web
     # image is local-only atm.
-    imagePullPolicy: Never
+    imagePullPolicy: Always
     name: static-web
+    ports:
+    - containerPort: 8080
   restartPolicy: Always
 
 
@@ -193,7 +203,7 @@ metadata:
 spec:
   selector:
     # This matches the label for the pods above.
-    app: static-web
+    name: static-web
   ports:
     - name: static-web
       protocol: TCP
@@ -212,7 +222,6 @@ spec:
     app: zookeeper
   ports:
     # note: for dev connections from the host outside k8, we use port forwarding direct to the pod.
-
     - name: zookeeper
       protocol: TCP
       port: 2181

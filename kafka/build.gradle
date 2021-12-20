@@ -22,5 +22,12 @@ test {
 task buildDockerImage(type:Exec) {
     workingDir "$projectDir"
     errorOutput(System.out)
-    commandLine "docker", "build", "-t", "${project.name}",  "."
+    commandLine "docker", "build", "-t", "benblamey/${project.name}:latest",  "."
 }
+
+task pushDockerImage(type:Exec) {
+    workingDir "$projectDir"
+    errorOutput(System.out)
+    commandLine "docker", "push", "benblamey/${project.name}:latest"
+}
+pushDockerImage.dependsOn buildDockerImage

@@ -56,9 +56,16 @@ task buildDockerImage(type:Exec) {
     errorOutput(System.out)
     System.out.println("${project.name}")
 
-    commandLine "docker", "build", "-t", "${project.name}",  "."
+    commandLine "docker", "build", "-t", "benblamey/${project.name}:latest",  "."
 }
 buildDockerImage.dependsOn jar
+
+task pushDockerImage(type:Exec) {
+    workingDir "$projectDir"
+    errorOutput(System.out)
+    commandLine "docker", "push", "benblamey/${project.name}:latest"
+}
+pushDockerImage.dependsOn buildDockerImage
 
 
 test {

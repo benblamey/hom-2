@@ -1,3 +1,4 @@
 #!/bin/sh
 
-docker build -t hom-impl-2.notebook .
+docker build -t benblamey/hom-impl-2.notebook:latest .
+docker push benblamey/hom-impl-2.notebook:latest
