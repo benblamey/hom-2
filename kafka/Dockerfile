@@ -24,6 +24,7 @@ RUN java --version
 # Lines above are common to all Dockerfiles in the project.
 ######
 
+RUN apt install -y dnsutils
 
 
 RUN curl -O https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz
