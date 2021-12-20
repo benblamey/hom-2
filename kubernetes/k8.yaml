@@ -39,7 +39,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - hom-1-benblamey
+           - hom-1-benblamey
 #          - docker-desktop
 ---
 apiVersion: v1
