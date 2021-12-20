@@ -66,7 +66,7 @@ metadata:
     app: zookeeper
 spec:
   containers:
-  - image: hom-impl-2.kafka
+  - image: benblamey/hom-impl-2.kafka:latest
     # image is local-only atm.
     imagePullPolicy: Always
     name: zookeeper
@@ -91,7 +91,7 @@ metadata:
     app: notebook
 spec:
   containers:
-  - image: hom-impl-2.notebook
+  - image: benblamey/hom-impl-2.notebook:latest
     # image is local-only atm.
     imagePullPolicy: Always
     name: notebook
@@ -118,7 +118,7 @@ metadata:
     app: kafka
 spec:
   containers:
-  - image: hom-impl-2.kafka
+  - image: benblamey/hom-impl-2.kafka:latest
     # image is local-only atm.
     imagePullPolicy: Always
     name: kafka
@@ -144,7 +144,7 @@ metadata:
     name: manager
 spec:
   containers:
-  - image: hom-impl-2.manager
+  - image: benblamey/hom-impl-2.manager:latest
     # image is local-only atm.
     imagePullPolicy: Always
     name: manager
@@ -169,7 +169,7 @@ metadata:
     name: static-web
 spec:
   containers:
-  - image: hom-impl-2.web
+  - image: benblamey/hom-impl-2.web:latest
     # image is local-only atm.
     imagePullPolicy: Always
     name: static-web
