@@ -175,8 +175,8 @@ function refreshTiers() {
   document.body.style.cursor = "wait";
 
   let xhr = new XMLHttpRequest();
-  //xhr.open('GET', 'http://localhost:4567/info-fake');
-  xhr.open('GET', 'http://localhost:4567/info');
+  //xhr.open('GET', '/api/info-fake');
+  xhr.open('GET', '/api/info');
   xhr.send();
   xhr.onload = function() {
     if (xhr.status != 200) {
@@ -282,7 +282,7 @@ window.onload = (event) => {
   btnNewNotebookTier.onclick = function() {
     document.body.style.cursor = "wait";
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:4567/available_functions');
+    xhr.open('GET', '/api/available_functions');
     xhr.send();
     xhr.onload = function () {
       document.body.style.cursor = "default";
@@ -303,7 +303,7 @@ window.onload = (event) => {
     document.body.style.cursor = "wait";
 
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:4567/create_notebook_tier');
+    xhr.open('POST', '/api/create_notebook_tier');
     xhr.send(
       JSON.stringify({
         "notebook_and_function": document.getElementById("notebook_and_function_select").value,
@@ -341,7 +341,7 @@ function getSample(node) {
   console.log(node)
   document.body.style.cursor = "wait";
   let xhr = new XMLHttpRequest();
-  xhr.open('GET', 'http://localhost:4567/sample/' + node.outputTopic());
+  xhr.open('GET', '/api/sample/' + node.outputTopic());
   // TODO: remove all the sampling stuff from here?
   //xhr.send();
   xhr.onload = function () {
@@ -371,7 +371,7 @@ function onNewNodeSelected(node) {
 function removeTier() {
   document.body.style.cursor = "wait";
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:4567/remove-tier');
+  xhr.open('POST', '/api/remove-tier');
   xhr.send();
   xhr.onload = function () {
     document.body.style.cursor = "default";
@@ -383,7 +383,7 @@ function addBaseTier() {
   topic = window.prompt(`Choose input Kafka topic:`, "haste-input-data");
   document.body.style.cursor = "wait";
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:4567/add-base-tier/' + topic);
+  xhr.open('POST', '/api/add-base-tier/' + topic);
   xhr.send();
   xhr.onload = function () {
     document.body.style.cursor = "default";
@@ -396,7 +396,7 @@ function addJexlTier() {
 
   document.body.style.cursor = "wait";
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:4567/add-tier');
+  xhr.open('POST', '/api/add-tier');
   xhr.send(
     JSON.stringify({
       "jexl_expression": expr
