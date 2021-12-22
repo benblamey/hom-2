@@ -30,6 +30,11 @@ public class ManagerMainREST {
         // We use the Spark micro-framework to serve the web requests.
         // http://sparkjava.com/documentation.html#getting-started
 
+        spark.Spark.get("/", (req, res) -> {
+                    logger.info("/");
+                    return "The API is running.";
+                });
+
         spark.Spark.post("/add-base-tier/:topicid", (req, res) -> {
             String topicID = req.params(":topicid");
                     logger.info("/add-tier-base");

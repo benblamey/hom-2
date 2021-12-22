@@ -271,7 +271,7 @@ spec:
   - host: "localhost"
     http:
       paths:
-      - path: /static/(.*)
+      - path: /gui/(.*)
         pathType: Prefix
         backend:
           service:
