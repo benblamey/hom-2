@@ -1,7 +1,10 @@
 kubectl config use-context docker-desktop
 
+sudo microk8s kubectl delete all --all --namespace=default
 
 
+# If you are updating, delete existing resources
+sudo microk8s kubectl delete all --all --namespace=hom
 
 
 kubectl delete persistentvolumeclaim/hom-pv-claim persistentvolume/hom-pv deployment.apps/py-stream-worker-deployment pods/notebook ; kubectl apply -f kubernetes/k8.yaml
@@ -9,11 +12,19 @@ kubectl delete persistentvolumeclaim/hom-pv-claim persistentvolume/hom-pv deploy
 kubectl delete deployment py-stream-worker-deployment ; kubectl apply -f kubernetes/k8.yaml
 kubectl delete pod manager ; kubectl apply -f kubernetes/k8.yaml
 kubectl delete pod notebook ; kubectl apply -f kubernetes/k8.yaml
+
+kubectl delete pod static-web ; kubectl delete service/static-web-service ; kubectl delete ingress/web-ingress ; kubectl apply -f kubernetes/k8.yaml
+
+
+
+
+
 kubectl port-forward --address localhost pods/manager 4567:4567
 kubectl port-forward --address localhost pods/notebook 8888:8888
+kubectl port-forward --address localhost pods/static-web 8080:8080
 
 Stream demo data (and attach):
-kubectl delete pod demo-data ; kubectl run demo-data --image hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- java -cp output.jar -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain 
+kubectl delete pod demo-data ; kubectl run demo-data --image benblamey/hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- java -cp output.jar -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain 
 
 
 kubectl delete pod/demo-data ; kubectl run demo-data --image hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Never' --restart=Always -- bash -c "while true; do echo -n .; sleep 1; done"
@@ -46,8 +57,13 @@ kubectl exec --stdin --tty notebook -- /bin/bash
 need --privileged=true to do mounting. see https://stackoverflow.com/questions/36553617/how-do-i-mount-bind-inside-a-docker-container
 docker run -i --tty --privileged=true c014e6306fdd /bin/bash
 
-docker run -i --tty notebook
 
+Or, if you’re using Docker for Mac to run Kubernetes instead of Minikube.
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.0/deploy/static/provider/cloud/deploy.yaml
+kubectl get pods --namespace=ingress-nginx
+Check that it’s all set up correctly. Forward a port to the ingress controller.
+sudo kubectl port-forward --namespace=ingress-nginx service/ingress-nginx-controller 80:80
+kubectl describe ingress web-ingress
 
 Set up kafka topics.
 (can skip this, topic auto-creation is now enabled )
@@ -58,10 +74,13 @@ bin/kafka-topics.sh --create \
 --topic haste-input-data
 
 bin/kafka-topics.sh --list --bootstrap-server kafka-service:9092 
+./kafka-topics.sh --list --bootstrap-server zookeeper-service:2181 
 bin/kafka-topics.sh --describe hom-topic-0-d2d5aebf-d61b-4f07-9c1c-b1fe6aff54a4 --bootstrap-server kafka-service:9092
 bin/kafka-topics.sh --describe haste-input-data --bootstrap-server kafka-service:9092
 ./bin/kafka-consumer-groups.sh --bootstrap-server kafka-service:9092 --describe --all-groups
 
+
+    ./kafka-console-producer --bootstrap-server kafka-service:9092 --topic haste-input-data2
 
 Jupyter Notebook CLI:
 usage: __main__.py [-h] [--debug] [--show-config] [--show-config-json] [--generate-config] [-y] [--allow-root] [--no-browser] [--autoreload] [--script] [--no-script] [--core-mode] [--dev-mode]
@@ -72,10 +91,6 @@ usage: __main__.py [-h] [--debug] [--show-config] [--show-config-json] [--genera
 [extra_args ...]
 
 TODO:
-first input tier is a bit weird
-sampling.
-    have the manager, on tier creation, create a listener which streams 500 elements to a file.
-    also, create a python notebook from a template, with the filename pre-loaded.
-Visualization in the notebook
 clean up web GUI, locking, etc.
+links from web GUI to notebook, etc.
 Deployment steps

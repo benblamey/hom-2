@@ -192,7 +192,6 @@ spec:
     app: kafka
   ports:
     # note: for dev connections from the host outside k8, we use port forwarding direct to the pod.
-
     - name: kafka-b
       protocol: TCP
       port: 9092

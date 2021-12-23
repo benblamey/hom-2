@@ -64,7 +64,7 @@ for msg in consumer:
 
     accept = output_dict.get('accept', True)
     if not accept:
-        logging.debug("skipping object: " + msg.value)
+        logging.debug("skipping object: " + str(msg.value))
         continue
     del output_dict['accept']
 
