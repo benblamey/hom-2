@@ -21,9 +21,9 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   local:
   # Bens macbook pro like this:
-  #  path: /Users/benblamey/projects/github-me/hom-impl-2/persistentvolume
+#    path: /Users/benblamey/projects/github-me/hom-impl-2/persistentvolume
   # Server like this:
-    path: /home/ubuntu/hom-2/persistentvolume
+    path: /home/ubuntu/mnt/hom-2/persistentvolume
 # NFS like this:
 #  nfs:
 #    server: 192.168.0.5
