@@ -38,7 +38,7 @@ sudo microk8s kubectl apply -f hom-2/kubernetes/k8.yaml
 # See if everything is running:
 sudo microk8s kubectl get all --all-namespaces
 
-# Access the Kubernetes dashboard (this keeps running so recommended open in a new session)
+# Access the Kubernetes admin dashboard (this keeps running so recommended open in a new session)
 sudo microk8s dashboard-proxy
 
 # port forward the web ingress to localhost (in the background)
