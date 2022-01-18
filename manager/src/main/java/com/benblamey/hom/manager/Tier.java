@@ -8,6 +8,7 @@ public abstract class Tier {
     String outputTopic;
     String uniqueTierId;
     String friendlyTierId;
+    private TopicSampler sampler;
 
     // Intended only for the 'InputTier'
     Tier(int index, String outputTopic) {
@@ -27,7 +28,7 @@ public abstract class Tier {
 
     private void init() {
         String sampleJsonlPath = "/data/sample-tier-" + friendlyTierId + ".jsonl";
-        new TopicSampler(outputTopic, sampleJsonlPath);
+        sampler = new TopicSampler(outputTopic, sampleJsonlPath);
 
         try {
             NotebooksFromTemplates.AnalyzeTierNotebookFromTemplate(sampleJsonlPath,
@@ -37,11 +38,16 @@ public abstract class Tier {
         }
     }
 
+    public void remove() throws IOException, InterruptedException {
+        if (sampler != null) {
+            sampler.close();
+            sampler = null;
+        }
+    }
+
     abstract Map<String, Object> toMap();
 
     abstract void setScale(int newScale) throws IOException, InterruptedException;
-
-    abstract void remove() throws IOException, InterruptedException;
 
     abstract String getKafkaApplicationID();
 

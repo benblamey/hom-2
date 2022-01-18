@@ -14,14 +14,15 @@ public class Util {
     }
 
     static String executeShellLogAndBlock(String[] args,
-                                          String[] ep, File workingDir,
+                                          String[] environmentVariables,
+                                          File workingDir,
                                           String stdin) throws IOException, InterruptedException {
         String cmdAndArgs = String.join(" ", args);
         System.out.println("Executing " + cmdAndArgs);
         System.out.flush();
 
         Process cmdProc = Runtime.getRuntime().exec(args,
-                ep,
+                environmentVariables,
                 workingDir);
 
         if (stdin != null) {

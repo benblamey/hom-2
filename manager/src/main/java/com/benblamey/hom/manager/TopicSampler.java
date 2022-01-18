@@ -17,12 +17,14 @@ public class TopicSampler {
 
     private static final int RECORD_COUNT = 500;
     private static final Logger logger = LoggerFactory.getLogger(TopicSampler.class);
+    private final Thread t;
+    private boolean m_stop = false;
 
     // TODO: these members can be static.
 
     public TopicSampler(String topic, String outputFilepathJsonl) {
         // "Start and forget"
-        Thread t = new Thread(null,
+        t = new Thread(null,
                 () -> {
                     try {
                         exportSample(topic, outputFilepathJsonl);
@@ -33,7 +35,18 @@ public class TopicSampler {
                 "topic-sampler-" + topic
         );
         t.start();
+
         logger.debug("TopicSampler thread started: " + t.getName());
+    }
+
+    public void close(){
+        logger.info("sampler terminating.");
+        m_stop = true;
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void exportSample(String topicID, String outputFilepath) throws InterruptedException, IOException {
@@ -48,6 +61,7 @@ public class TopicSampler {
         KafkaConsumer<Long, String> consumer = new KafkaConsumer<Long, String>(props);
         FileWriter fileWriter = null;
         BufferedWriter bufferedWriter = null;
+
         try {
             consumer.subscribe(List.of(topicID));
             consumer.seekToBeginning(consumer.assignment());
@@ -58,7 +72,7 @@ public class TopicSampler {
             fileWriter = new FileWriter(outputFilepath);
             bufferedWriter = new BufferedWriter(fileWriter);
 
-            while (true) {
+            while (!m_stop) {
                 ConsumerRecords<Long, String> records = consumer.poll(Duration.ofMillis(500));
                 logger.info(consumer.groupMetadata().toString());
                 logger.info("records fetched: " + records.count());
@@ -86,6 +100,7 @@ public class TopicSampler {
             if (bufferedWriter != null) bufferedWriter.close();
             if (fileWriter != null) fileWriter.close();
         }
+        logger.debug("TopicSampler for " + topicID + " terminated.");
     }
 
 

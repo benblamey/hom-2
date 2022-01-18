@@ -66,7 +66,9 @@ for msg in consumer:
     if not accept:
         logging.debug("skipping object: " + str(msg.value))
         continue
-    del output_dict['accept']
+
+    # Remove the accept entry, if it exists.
+    output_dict.pop("accept", None)
 
     key = msg.key  # needs to be bytes
     value = json.dumps(output_dict).encode('utf-8')  # needs to be bytes

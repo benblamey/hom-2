@@ -47,6 +47,9 @@ public class JexlDeploymentTier extends Tier {
 
     @Override
     public void remove() throws IOException, InterruptedException {
+        // Stop the sampler.
+        super.remove();
+
         Util.executeShellLogAndBlock(new String[] {"kubectl","delete","deployment",this.name});
     }
 
