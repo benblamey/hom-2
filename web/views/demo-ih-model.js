@@ -1,3 +1,5 @@
+REFRESH_TIERS_TIMEOUT = 6000
+
 // https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
 function generateUUID() { // Public Domain/MIT
   var d = new Date().getTime();//Timestamp
@@ -178,7 +180,15 @@ function refreshTiers() {
   //xhr.open('GET', '/api/info-fake');
   xhr.open('GET', '/api/info');
   xhr.send();
+  xhr.onabort = function() {
+    setInterval(refreshTiers, REFRESH_TIERS_TIMEOUT);
+  }
+  xhr.onerror = function() {
+    setInterval(refreshTiers, REFRESH_TIERS_TIMEOUT);
+  }
   xhr.onload = function() {
+    setInterval(refreshTiers, REFRESH_TIERS_TIMEOUT);
+
     if (xhr.status != 200) {
       alert(`Error ${xhr.status}: ${xhr.statusText}`);
     } else {
@@ -251,8 +261,6 @@ window.onload = (event) => {
   // set demo_ih_model as the root VM.
   // this is referred to as $data from within the bindings.
   ko.applyBindings(demo_ih_model);
-
-  setInterval(refreshTiers, 8000);
 
   // // Demo data for now
   // demo_ih_model = {

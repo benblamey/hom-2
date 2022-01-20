@@ -17,7 +17,6 @@ spec:
       containers:
       - name: $container_name
         image: benblamey/hom-impl-2.py-stream-worker
-        # image is local-only atm.
         imagePullPolicy: Always
         command: [$cmd]
         args: [$args]

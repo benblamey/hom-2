@@ -2,6 +2,8 @@ package com.benblamey.hom.manager;
 
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -9,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Offsets {
+    final static Logger logger = LoggerFactory.getLogger(Offsets.class);
+
     public static class OffsetInfo implements JSONAware {
         public OffsetInfo(List<String> parts) {
             // Parse output from kafka-consumer-groups.sh
@@ -61,7 +65,10 @@ public class Offsets {
         };
         String result;
         try {
+            long before = System.currentTimeMillis() / 1000L;
             result = Util.executeShellLogAndBlock(args);
+            long after = System.currentTimeMillis() / 1000L;
+            logger.info("kafka-consumer-groups.sh took " + (after - before) + " seconds.");
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
