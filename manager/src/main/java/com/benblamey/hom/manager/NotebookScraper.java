@@ -19,7 +19,7 @@ public class NotebookScraper {
                 // Unescaped:
                 // grep --extended-regexp --only-matching "^\s*\"\s*def ([^(])+\(" *.ipynb | sed -E "s/(.+):\s+\"def (.+)\(/\1,\2/"
                         "grep --extended-regexp --only-matching \"^\\s*\\\"\\s*def ([^(])+\\(\" *.ipynb | sed -E \"s/(.+):\\s+\\\"def (.+)\\(/\\1::\\2/\""
-                }, null, new File(directory), null);
+                }, new File(directory), null);
 
         return Arrays.stream(stdOut.split("\n")).toList();
     }

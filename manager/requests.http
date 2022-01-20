@@ -10,8 +10,14 @@ Accept: application/json
 POST http://localhost:4567/remove-tier
 Accept: application/json
 
+
 ### info
-GET http://localhost:4567/info
+GET http://localhost/api/info
+Accept: application/json
+
+
+### info
+GET http://localhost:8080/api/info
 Accept: application/json
 
 ### available_functions

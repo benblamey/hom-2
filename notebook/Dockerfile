@@ -26,6 +26,10 @@ RUN apt install -y python3.10-dev
 RUN apt install -y python3-pip
 RUN python3 -m pip install jupyterlab==3.2.4
 
+# These python packages are used in the example notebooks.
+RUN python3 -m pip install pandas==1.3.4
+RUN python3 -m pip install matplotlib==3.5.0
+
 CMD ["/bin/bash","-ec","while true; do echo -n .; sleep 1; done"]
 
 

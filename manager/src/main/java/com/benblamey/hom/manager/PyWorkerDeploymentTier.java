@@ -117,7 +117,7 @@ public class PyWorkerDeploymentTier extends Tier {
                         "apply",
                         "-f",
                         "-"
-                }, null, null, yaml);
+                }, null, yaml);
 
         Util.executeShellLogAndBlock(
                 new String[]{

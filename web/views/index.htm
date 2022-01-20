@@ -29,7 +29,8 @@
       <div>
         <!-- this doesn;t seem to work. maybe needs current page location to be localhost ?? -->
         <!-- dtaa binding href doesnt work, need javascript function / button or whatever -->
-        <a target="_blank" href="/notebook/lab/tree/analyze-tier-0.ipynb">Notebook for Output Data</a>    
+        <a target="_blank" href="/notebook/lab/tree/analyze-tier-0.ipynb">Notebook for Output Data</a>
+
 
       </div>
     </div>
@@ -102,7 +103,10 @@
     Similarly, it should return a <span class="inline_code">dict</span> representing the new document (or the same document).
       If the <span class="inline_code">dict</span> has a element with key <span class="inline_code">accept</span> (set it to <span class="inline_code">True</span> or <span class="inline_code">False</span>) this will be used to filter documents for the next tier.
     If the key is not present, the document is retained in the next tier.
-      The document you return must be JSON-serializable. Example code:
+      The document you return must be JSON-serializable.
+    </p>
+    <p>
+      Example code:
     </p>
     <pre>
 def process_message(message):

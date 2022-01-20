@@ -93,7 +93,7 @@ public class JexlDeploymentTier extends Tier {
                         "apply",
                         "-f",
                         "-"
-                }, null, null, yaml);
+                }, null, yaml);
 
         Util.executeShellLogAndBlock(
                 new String[]{

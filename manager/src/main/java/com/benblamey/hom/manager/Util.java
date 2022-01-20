@@ -2,7 +2,6 @@ package com.benblamey.hom.manager;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.UUID;
@@ -11,20 +10,20 @@ import static org.apache.logging.log4j.core.util.Loader.getClassLoader;
 
 public class Util {
     static String executeShellLogAndBlock(String[] args) throws IOException, InterruptedException {
-        return executeShellLogAndBlock(args, null, null, null);
+        return executeShellLogAndBlock(args, null, null);
     }
 
     static String executeShellLogAndBlock(String[] args,
-                                          String[] environmentVariables,
                                           File workingDir,
                                           String stdin) throws IOException, InterruptedException {
         String cmdAndArgs = String.join(" ", args);
         System.out.println("Executing " + cmdAndArgs);
         System.out.flush();
 
-        Process cmdProc = Runtime.getRuntime().exec(args,
-                environmentVariables,
-                workingDir);
+        Process cmdProc = new ProcessBuilder(args)
+                .redirectErrorStream(true) // merge with stdOut
+                .directory(workingDir)
+                .start();
 
         if (stdin != null) {
             cmdProc.getOutputStream().write(stdin.getBytes(StandardCharsets.UTF_8));
@@ -32,12 +31,24 @@ public class Util {
             cmdProc.getOutputStream().close();
         }
 
+        String stdOut = "";
+        int bytesRead = -1;
+        do {
+            byte[] bytes = cmdProc.getInputStream().readNBytes(1024);
+            bytesRead = bytes.length;
+            stdOut += new String(bytes, StandardCharsets.UTF_8);
+        } while (bytesRead > 0);
+
+        // Think this is redundant (because we got to end of ouput stream) but to be sure.
         cmdProc.waitFor();
 
+        do {
+            byte[] bytes = cmdProc.getInputStream().readNBytes(1024);
+            bytesRead = bytes.length;
+            stdOut += new String(bytes, StandardCharsets.UTF_8);
+        } while (bytesRead > 0);
+
         System.out.println("Process exited with code: " + cmdProc.exitValue());
-        String stdErr = new String(cmdProc.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
-        System.out.println(stdErr);
-        String stdOut = new String(cmdProc.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         System.out.println(stdOut);
         System.out.flush();
 
