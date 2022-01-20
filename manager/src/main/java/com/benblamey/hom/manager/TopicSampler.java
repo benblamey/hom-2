@@ -19,6 +19,7 @@ public class TopicSampler {
     private static final Logger logger = LoggerFactory.getLogger(TopicSampler.class);
     private final Thread t;
     private boolean m_stop = false;
+    private String groupId;
 
     // TODO: these members can be static.
 
@@ -50,6 +51,8 @@ public class TopicSampler {
     }
 
     public void exportSample(String topicID, String outputFilepath) throws InterruptedException, IOException {
+        groupId = "sampler-" + topicID;
+
         Properties props = new Properties();
         props.setProperty("bootstrap.servers", CommandLineArguments.getKafkaBootstrapServerConfig());
         props.setProperty("group.id", "sampler");
@@ -99,6 +102,19 @@ public class TopicSampler {
             consumer.close();
             if (bufferedWriter != null) bufferedWriter.close();
             if (fileWriter != null) fileWriter.close();
+
+            Util.executeShellLogAndBlock(
+                    new String[]{
+                            "bash",
+                            "-ec",
+                            "kafka-consumer-groups.sh",
+                            "--bootstrap-server",
+                            CommandLineArguments.getKafkaBootstrapServerConfig(),
+                            "--delete",
+                            "--group",
+                            groupId
+                    }
+            );
         }
         logger.debug("TopicSampler for " + topicID + " terminated.");
     }

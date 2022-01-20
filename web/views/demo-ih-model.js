@@ -172,8 +172,7 @@ function foo_setInterval() {
   updateFrequencies();
 }
 
-function refreshTiers() {
-
+function refreshTiers(repeat = true) {
   document.body.style.cursor = "wait";
 
   let xhr = new XMLHttpRequest();
@@ -181,13 +180,19 @@ function refreshTiers() {
   xhr.open('GET', '/api/info');
   xhr.send();
   xhr.onabort = function() {
-    setInterval(refreshTiers, REFRESH_TIERS_TIMEOUT);
+    if (repeat) {
+      setTimeout(refreshTiers, REFRESH_TIERS_TIMEOUT);
+    }
   }
   xhr.onerror = function() {
-    setInterval(refreshTiers, REFRESH_TIERS_TIMEOUT);
+    if (repeat) {
+      setTimeout(refreshTiers, REFRESH_TIERS_TIMEOUT);
+    }
   }
   xhr.onload = function() {
-    setInterval(refreshTiers, REFRESH_TIERS_TIMEOUT);
+    if (repeat) {
+      setTimeout(refreshTiers, REFRESH_TIERS_TIMEOUT);
+    }
 
     if (xhr.status != 200) {
       alert(`Error ${xhr.status}: ${xhr.statusText}`);
@@ -383,7 +388,7 @@ function removeTier() {
   xhr.send();
   xhr.onload = function () {
     document.body.style.cursor = "default";
-    refreshTiers();
+    refreshTiers(false);
   }
 }
 
@@ -395,7 +400,7 @@ function addBaseTier() {
   xhr.send();
   xhr.onload = function () {
     document.body.style.cursor = "default";
-    refreshTiers();
+    refreshTiers(false);
   }
 }
 
@@ -412,7 +417,7 @@ function addJexlTier() {
   );
   xhr.onload = function () {
     document.body.style.cursor = "default";
-    refreshTiers();
+    refreshTiers(false);
   }
 }
 

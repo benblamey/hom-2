@@ -1,5 +1,7 @@
 # This script is run inside the container before the processing starts, it can be used to install required packages.
 
+# TODO: THIS IS NOT YET IMPLEMENTED. IT IS NOT RUN!
+
 echo "Starting contextualization script..."
 
 # e.g.:

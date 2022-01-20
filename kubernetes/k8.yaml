@@ -173,7 +173,6 @@ metadata:
 spec:
   containers:
   - image: benblamey/hom-impl-2.web:latest
-    # image is local-only atm.
     imagePullPolicy: Always
     name: static-web
     ports:
