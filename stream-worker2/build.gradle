@@ -35,6 +35,8 @@ dependencies {
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     // This one just puts the output in the cosole.
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'

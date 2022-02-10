@@ -14,6 +14,7 @@ Part of the HASTE Project. http://haste.research.it.uu.se/
 # Connect to the server forwarding ports to these ports on the server:
 #  localhost:10443 (for the microK8s dash)
 #  localhost:80 (for the HTTP services)
+# See: https://www.ibm.com/support/pages/what-are-ssh-tunnels-and-how-use-them
 
 sudo apt update
 
@@ -50,7 +51,7 @@ sudo microk8s kubectl port-forward --namespace=ingress daemonset.apps/nginx-ingr
 (Note that access to all the web services, including the notebook, is protected by the SSH login)
 
 # (re)Start the demo application can restart/begin streaming data:
-sudo microk8s kubectl delete pod demo-data ; sudo microk8s kubectl run demo-data --image benblamey/hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Always' --restart=Always -- java -cp output.jar -Droot.log.level=DEBUG -Dcom.benblamey.hom.demodata.DemoDataProducer.log.level=DEBUG -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain
+sudo microk8s kubectl delete pod demo-data ; sudo microk8s kubectl run demo-data --image benblamey/hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Always' --restart=Always -- java -cp output.jar -Droot.log.level=DEBUG -Dcom.benblamey.hom.demodata.DemoDataProducer.log.level=DEBUG -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain
 
 Go into the GUI and add an input tier for "haste-input-data".
 

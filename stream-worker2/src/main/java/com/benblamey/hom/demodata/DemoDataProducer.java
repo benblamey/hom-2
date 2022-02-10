@@ -26,7 +26,7 @@ public class DemoDataProducer {
     private Producer<Long, String> createProducer() {
         final Properties props = new Properties();
         //props.putIfAbsent(StreamsConfig.APPLICATION_ID_CONFIG, "haste-backend-1"); not known ?!
-        props.putIfAbsent(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, CommandLineArguments.getKafkaBootstrapServerConfig());
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, CommandLineArguments.getKafkaBootstrapServerConfig());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         return new KafkaProducer<>(props);
@@ -75,6 +75,12 @@ public class DemoDataProducer {
         // Write some messages to the input stream.
         // 5000 takes apx 10 seconds.
         m_producerThread = new Thread(() -> runProducer(NUM_OF_MESSAGES), "input-message-producer");
+        m_producerThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                logger.error("unhandled exception on producer thread", e);
+            }
+        });
         m_producerThread.start();
         System.out.println("input messages started.");
     }
