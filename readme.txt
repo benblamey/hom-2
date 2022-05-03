@@ -7,6 +7,8 @@ https://www.dropbox.com/s/lz5l35g7q9l6lli/haste-o-matic-demo-dec.mov?dl=0
 
 Part of the HASTE Project. http://haste.research.it.uu.se/
 
+Contributors: Ben Blamey
+
 
 # DEPLOYMENT INSTRUCTIONS FOR UBUNTU 21.04
 #############
