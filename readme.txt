@@ -25,7 +25,7 @@ sudo snap install microk8s --classic
 sudo microk8s enable dns
 sudo microk8s enable ingress
 
-# Access the Kubernetes admin dashboard (this keeps running so recommended open in a new session)
+# Access the Kubernetes admin dashboard (this keeps running so recommended open in a new session). Binds to https://127.0.0.1:10443 
 sudo microk8s dashboard-proxy
 
 sudo apt -y install git
@@ -46,9 +46,9 @@ sudo microk8s kubectl get all --all-namespaces
 # port forward the web ingress to localhost (in the background)
 sudo microk8s kubectl port-forward --namespace=ingress daemonset.apps/nginx-ingress-microk8s-controller 80:80 &
 
-# If port forwarding is setup correctly, you can now access:
+# If port forwarding is setup correctly, you can now access (don't forget the trailing slash):
 # http://localhost/gui/ (the GUI)
-# http://localhost/notebook/ (Jupyer) The password is hej-hom-impl-foo
+# http://localhost/notebook/ (Jupyter) The password is hej-hom-impl-foo
 (Note that access to all the web services, including the notebook, is protected by the SSH login)
 
 # (re)Start the demo application can restart/begin streaming data:
