@@ -101,8 +101,7 @@
     <p>
       Your method must take a single argument (a <span class="inline_code">dict</span> representing the document).
     Similarly, it should return a <span class="inline_code">dict</span> representing the new document (or the same document).
-      If the <span class="inline_code">dict</span> has a element with key <span class="inline_code">accept</span> (set it to <span class="inline_code">True</span> or <span class="inline_code">False</span>) this will be used to filter documents for the next tier.
-    If the key is not present, the document is retained in the next tier.
+    To exclude a document from the next tier, simply return <span class="inline_code">None</span>.
       The document you return must be JSON-serializable.
     </p>
     <p>
