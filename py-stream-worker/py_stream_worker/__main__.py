@@ -60,15 +60,19 @@ for msg in consumer:
     input_dict = json.loads(msg.value)
     logging.debug(input_dict)
     output_dict = users_function(input_dict)
+
     logging.debug(output_dict)
 
-    accept = output_dict.get('accept', True)
-    if not accept:
-        logging.debug("skipping object: " + str(msg.value))
+    if not output_dict:
+        logging.debug('Returned object is falsy so will not be written to next tier.')
         continue
 
-    # Remove the accept entry, if it exists.
-    output_dict.pop("accept", None)
+    if accept in output_dict:
+        logging.debug(" 'accept' key detected. Use of this field is deprecated. It is preferred simply to return a falsy value, like None, to exclude an object.")
+        accept = output_dict.pop("accept", None)
+        if not accept:
+            logging.debug("skipping object because 'accept' was truthy.")
+            continue
 
     key = msg.key  # needs to be bytes
     value = json.dumps(output_dict).encode('utf-8')  # needs to be bytes
