@@ -29,7 +29,7 @@ sudo microk8s enable ingress
 sudo microk8s dashboard-proxy
 
 sudo apt -y install git
-git clone https://github.com/benblamey/hom-2.git
+git clone https://github.com/HASTE-project/hom-2.git
 
 # modify the persistent volume to match the current machine (check the host and path)
 # The lines are near the top:
