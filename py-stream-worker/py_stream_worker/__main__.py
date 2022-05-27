@@ -57,7 +57,6 @@ for msg in consumer:
         logging.info("successfully read a message from Kafka.")
         read_a_message = True
 
-    logging.info(f'input message is:  {msg}')
     input_dict = json.loads(msg.value)
 
     output_dict = users_function(input_dict)
