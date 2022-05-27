@@ -43,8 +43,6 @@ public class PyWorkerDeploymentTier extends Tier {
                 "pyworker-tier-creator-" + this.name
         );
         t.start();
-
-        logger.debug("TopicSampler thread started: " + t.getName());
     }
 
     @Override
@@ -72,7 +70,17 @@ public class PyWorkerDeploymentTier extends Tier {
         // Stop the sampler.
         super.remove();
 
-        Util.executeShellLogAndBlock(new String[]{"kubectl", "delete", "deployment", this.name});
+        Thread t = new Thread(null,
+                () -> {
+                    try {
+                        Util.executeShellLogAndBlock(new String[]{"kubectl", "delete", "deployment", this.name});
+                    } catch (InterruptedException | IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                "pyworker-tier-remover-" + this.name
+        );
+        t.start();
     }
 
     @Override
