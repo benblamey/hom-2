@@ -5,7 +5,7 @@ import json
 import importlib.util
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 # python3 -m py_stream_worker kafka-service:9092 haste-input-data output-topic-foo groupidfoo example.py hej
 
@@ -37,6 +37,8 @@ producer = KafkaProducer(bootstrap_servers=kakfa_bootstrap_server)
 
 # TODO: have one thread listen for shutdown, and exit gracefully.
 
+print('started.')
+
 import_spec = importlib.util.spec_from_file_location("my_notebook", python_filepath)
 imported_module = importlib.util.module_from_spec(import_spec)
 loaded_module = import_spec.loader.exec_module(imported_module)
@@ -52,22 +54,21 @@ users_function = getattr(imported_module, python_function)
 
 for msg in consumer:
     if not read_a_message:
-        logging.info("successfully read a message.")
+        logging.info("successfully read a message from Kafka.")
         read_a_message = True
 
-    logging.debug(msg)
-
+    logging.info(f'input message is:  {msg}')
     input_dict = json.loads(msg.value)
-    logging.debug(input_dict)
+
     output_dict = users_function(input_dict)
 
-    logging.debug(output_dict)
+    logging.debug(f'output dictionary is: {output_dict}')
 
     if not output_dict:
         logging.debug('Returned object is falsy so will not be written to next tier.')
         continue
 
-    if accept in output_dict:
+    if 'accept' in output_dict:
         logging.debug(" 'accept' key detected. Use of this field is deprecated. It is preferred simply to return a falsy value, like None, to exclude an object.")
         accept = output_dict.pop("accept", None)
         if not accept:
