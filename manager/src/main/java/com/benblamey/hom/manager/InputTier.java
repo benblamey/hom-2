@@ -27,7 +27,8 @@ public class InputTier  extends Tier {
                 "inputTopic", "",
                 "outputTopic", this.outputTopic,
                 "kafkaApplicationID", "",
-                "jexlExpression", ""
+                "jexlExpression", "",
+                "error", ""
         ));
     }
 

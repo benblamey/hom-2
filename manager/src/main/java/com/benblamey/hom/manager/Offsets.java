@@ -57,7 +57,7 @@ public class Offsets {
 
     static List<OffsetInfo> fetchOffsets() {
         String[] args = {
-                "/kafka_2.13-3.0.0/bin/kafka-consumer-groups.sh",
+                "/kafka_2.13-3.0.1/bin/kafka-consumer-groups.sh",
                 "--bootstrap-server",
                 CommandLineArguments.getKafkaBootstrapServerConfig(),
                 "--describe",
@@ -66,7 +66,7 @@ public class Offsets {
         String result;
         try {
             long before = System.currentTimeMillis() / 1000L;
-            result = Util.executeShellLogAndBlock(args);
+            result = Util.executeShellLogAndBlock(args).stdOut;
             long after = System.currentTimeMillis() / 1000L;
             logger.info("kafka-consumer-groups.sh took " + (after - before) + " seconds.");
         } catch (IOException | InterruptedException e) {

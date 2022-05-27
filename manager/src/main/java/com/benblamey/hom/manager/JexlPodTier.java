@@ -43,7 +43,8 @@ public class JexlPodTier extends Tier {
                 "uniqueTierId", this.uniqueTierId,
                 "inputTopic", this.inputTopic,
                 "outputTopic", this.outputTopic,
-                "kafkaApplicationID", this.kafkaApplicationID
+                "kafkaApplicationID", this.kafkaApplicationID,
+                "error", ""
         ));
     }
 

@@ -32,9 +32,9 @@ RUN python3 -m pip install jupyterlab==3.2.4
 RUN python3 -m pip install nbconvert==6.3.0
 
 
-RUN curl -O https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz
-RUN tar -xzf kafka_2.13-3.0.0.tgz
-# /kafka_2.13-3.0.0
+RUN curl -O https://dlcdn.apache.org/kafka/3.0.1/kafka_2.13-3.0.1.tgz
+RUN tar -xzf kafka_2.13-3.0.1.tgz
+# /kafka_2.13-3.0.1
 
 # install kubectl, instructions from kubernetes website
 #RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"

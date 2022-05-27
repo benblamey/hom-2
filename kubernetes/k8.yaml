@@ -1,3 +1,5 @@
+
+---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
@@ -40,8 +42,8 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-           - hom-2-benblamey
-#          - docker-desktop
+#           - hom-2-benblamey
+          - docker-desktop
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -89,6 +91,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: notebook
+  namespace: hom
   labels:
     name: notebook
 spec:
@@ -138,11 +141,12 @@ spec:
   restartPolicy: Always
 
 ---
-
 apiVersion: v1
 kind: Pod
 metadata:
   name: manager
+  # need this here so that the role binding is picked up correctly.
+  namespace: hom
   labels:
     name: manager
 spec:
@@ -156,6 +160,7 @@ spec:
     volumeMounts:
     - mountPath: /data
       name: volume-hom-pv
+  serviceAccountName: app-service-account
   volumes:
   - name: volume-hom-pv
     persistentVolumeClaim:
@@ -163,11 +168,11 @@ spec:
   restartPolicy: Always
 
 ---
-
 apiVersion: v1
 kind: Pod
 metadata:
   name: static-web
+  namespace: hom
   labels:
     name: static-web
 spec:
@@ -257,20 +262,22 @@ spec:
 
 ---
 
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
   namespace: hom
   annotations:
+    #kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   # Matches the configuration created for the ingress controller
   #ingressClassName: nginx
   # ingressClassName now needs to be public according to this:
   # https://stackoverflow.com/questions/54506269/simple-ingress-from-host-with-microk8s
-  ingressClassName: public
+  # For mikrok8s, set it 'public'.
+  # For docker desktop, set it 'nginx'.
+  ingressClassName: nginx
   rules:
   - host: "localhost"
     http:

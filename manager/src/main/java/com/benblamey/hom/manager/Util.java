@@ -9,11 +9,11 @@ import java.util.UUID;
 import static org.apache.logging.log4j.core.util.Loader.getClassLoader;
 
 public class Util {
-    static String executeShellLogAndBlock(String[] args) throws IOException, InterruptedException {
+    static ProcessExecutionResult executeShellLogAndBlock(String[] args) throws IOException, InterruptedException {
         return executeShellLogAndBlock(args, null, null);
     }
 
-    static String executeShellLogAndBlock(String[] args,
+    static ProcessExecutionResult executeShellLogAndBlock(String[] args,
                                           File workingDir,
                                           String stdin) throws IOException, InterruptedException {
         String cmdAndArgs = String.join(" ", args);
@@ -48,11 +48,18 @@ public class Util {
             stdOut += new String(bytes, StandardCharsets.UTF_8);
         } while (bytesRead > 0);
 
-        System.out.println("Process exited with code: " + cmdProc.exitValue());
+
+        int exitCode = cmdProc.exitValue();
+        System.out.println("Process exited with code: " + exitCode);
+
         System.out.println(stdOut);
         System.out.flush();
 
-        return stdOut;
+        ProcessExecutionResult result = new ProcessExecutionResult();
+        result.stdOut = stdOut;
+        result.exitCode = exitCode;
+
+        return result;
     }
 
     static String getResourceAsStringFromUTF8(String name) throws IOException {
@@ -65,7 +72,7 @@ public class Util {
         return uuid.toString();
     }
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     public static String randomAlphaString(int length) {
         int leftLimit = 97; // letter 'a'
@@ -81,4 +88,8 @@ public class Util {
         return generatedString;
     }
 
+    public static class ProcessExecutionResult {
+        public String stdOut;
+        public int exitCode;
+    }
 }

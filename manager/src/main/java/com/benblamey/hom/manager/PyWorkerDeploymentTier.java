@@ -8,6 +8,8 @@ import java.util.*;
 
 public class PyWorkerDeploymentTier extends Tier {
 
+    private String error = ""; // cannot be null.
+
     // For debugging
     public static void main(String[] args) throws IOException, InterruptedException {
         new PyWorkerDeploymentTier("foo.ipynb::hej", 0, "input-topic-foo");
@@ -30,7 +32,19 @@ public class PyWorkerDeploymentTier extends Tier {
         this.name = "engine-" + friendlyTierId + "-" + uniqueTierId;
         this.pythonFilenameAndFunction = pythonFilenameAndFunction;
 
-        createDeployment();
+        Thread t = new Thread(null,
+                () -> {
+                    try {
+                        createDeployment();
+                    } catch (InterruptedException | IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                "pyworker-tier-creator-" + this.name
+        );
+        t.start();
+
+        logger.debug("TopicSampler thread started: " + t.getName());
     }
 
     @Override
@@ -43,7 +57,8 @@ public class PyWorkerDeploymentTier extends Tier {
                 "inputTopic", this.inputTopic,
                 "outputTopic", this.outputTopic,
                 "kafkaApplicationID", this.kafkaApplicationID,
-                "jexlExpression", this.pythonFilenameAndFunction // back compat with web GUI
+                "jexlExpression", this.pythonFilenameAndFunction, // back compat with web GUI
+                "error", this.error
         ));
     }
 
@@ -73,7 +88,7 @@ public class PyWorkerDeploymentTier extends Tier {
         String function = s[1];
         String scriptFileNameAndExtension = name + ".py";
 
-        Util.executeShellLogAndBlock(
+        Util.ProcessExecutionResult convertResult = Util.executeShellLogAndBlock(
                 new String[]{
                         "python3",
                         "-m",
@@ -86,6 +101,14 @@ public class PyWorkerDeploymentTier extends Tier {
                         "--to",
                         "python"
                 });
+
+
+        System.out.println(convertResult.stdOut);
+
+        if (convertResult.exitCode != 0) {
+            this.error = "Could not convert notebook to .py. Check for syntax errors in ipynb file (even if your function is OK).";
+            return;
+        }
 
         List<String> args = new ArrayList<String>();
 
@@ -111,7 +134,7 @@ public class PyWorkerDeploymentTier extends Tier {
 
         System.out.println(yaml);
 
-        Util.executeShellLogAndBlock(
+        Util.ProcessExecutionResult s1 = Util.executeShellLogAndBlock(
                 new String[]{
                         "kubectl",
                         "apply",
@@ -119,7 +142,7 @@ public class PyWorkerDeploymentTier extends Tier {
                         "-"
                 }, null, yaml);
 
-        Util.executeShellLogAndBlock(
+        Util.ProcessExecutionResult s2 = Util.executeShellLogAndBlock(
                 new String[]{
                         "kubectl",
                         "autoscale",

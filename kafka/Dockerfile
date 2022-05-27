@@ -27,14 +27,14 @@ RUN java --version
 RUN apt install -y dnsutils
 
 
-RUN curl -O https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz
+RUN curl -O https://dlcdn.apache.org/kafka/3.0.1/kafka_2.13-3.0.1.tgz
 
-RUN tar -xzf kafka_2.13-3.0.0.tgz
+RUN tar -xzf kafka_2.13-3.0.1.tgz
 
 # this would be just a comment to say which port it listens on!
 #EXPOSE 29092
 
-WORKDIR /kafka_2.13-3.0.0
+WORKDIR /kafka_2.13-3.0.1
 
 COPY log4j.properties config/log4j.properties
 #CMD ["bash"]

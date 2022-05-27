@@ -18,7 +18,7 @@ public class Manager {
 
     public void cleanup() throws IOException, InterruptedException {
         // Remove existing deployments.
-        String deployments = Util.executeShellLogAndBlock(new String[]{"kubectl", "get", "deployments"});
+        String deployments = Util.executeShellLogAndBlock(new String[]{"kubectl", "get", "deployments"}).stdOut;
 //        NAME                                            READY   UP-TO-DATE   AVAILABLE   AGE
 //        engine-0-00dcaf18-7a68-41bb-a9a7-cda5c604a920   0/1     1            0           11m
 //        engine-0-49409c05-5f6a-4e31-b4a8-0a1b63ad549a   0/1     1            0           8m1s
@@ -35,7 +35,7 @@ public class Manager {
         }
 
         // Remove any remaining older JEXL pods. (JexlDeploymentPod)
-        String getPods = Util.executeShellLogAndBlock(new String[]{"kubectl", "get", "pods"});
+        String getPods = Util.executeShellLogAndBlock(new String[]{"kubectl", "get", "pods"}).stdOut;
 //        NAME                                          READY   STATUS             RESTARTS   AGE
 //        demo-data                                     1/1     Running            1          47h
 //        engine-1ba4f755-17f6-49d5-a884-403a2e63f66d   1/1     Running            0          4m5s

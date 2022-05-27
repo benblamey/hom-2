@@ -45,6 +45,7 @@ public abstract class Tier {
         }
     }
 
+    // Note: values must be non-null
     abstract Map<String, Object> toMap();
 
     abstract void setScale(int newScale) throws IOException, InterruptedException;

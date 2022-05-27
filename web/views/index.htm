@@ -25,6 +25,7 @@
       <div class='minor_tier_info' data-bind="text:jexlExpression()"></div>
       <div class='minor_tier_info' data-bind="text:'Input Documents in Tier: ' + SUM_OF_LOG_END_OFFSETS()"></div>
       <div class='minor_tier_info' data-bind="text:'Processed: ' + parseFloat(SUM_OF_CURRENT_OFFSETS()/SUM_OF_LOG_END_OFFSETS() * 100).toFixed(2) + '% ' "></div>
+      <div class='minor_tier_info' data-bind="visible:error() != '', text:'&#x26A0; ' +  error()"></div>
 
       <div>
         <!-- this doesn;t seem to work. maybe needs current page location to be localhost ?? -->
