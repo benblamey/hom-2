@@ -39,6 +39,7 @@ public class InputTier  extends Tier {
 
     @Override
     public void remove() throws IOException, InterruptedException {
+        super.remove();
         logger.debug("IntputTier removed - nothing to do within the Tier itself");
     }
 

@@ -59,9 +59,11 @@ for msg in consumer:
 
     input_dict = json.loads(msg.value)
 
+    logging.info(f'input dictionary is: {input_dict}')
+
     output_dict = users_function(input_dict)
 
-    logging.debug(f'output dictionary is: {output_dict}')
+    logging.info(f'output dictionary is: {output_dict}')
 
     if not output_dict:
         logging.debug('Returned object is falsy so will not be written to next tier.')

@@ -71,6 +71,7 @@ public class JexlPodTier extends Tier {
 
     @Override
     public void remove() throws IOException, InterruptedException {
+        super.remove();
         this.setScale(0);
     }
 
