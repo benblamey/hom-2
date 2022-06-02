@@ -12,12 +12,39 @@
 
 <div id="treeview-container">
 
+  <div style="background: whitesmoke;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;">
+
+    <button onclick="refreshTiers()">
+      Refresh...
+    </button>
+
+    <div data-bind="visible: (demo_ih_model.tiers().length == 0)">
+      <button onclick="addBaseTier()">
+        Add Input Tier...
+      </button>
+    </div>
+
+    <div data-bind="visible: (demo_ih_model.tiers().length > 0)">
+      <button onclick="addJexlTier()">
+        Add JEXL Tier...
+      </button>
+
+      <!-- Trigger/Open The Modal -->
+      <button id="btnNewNotebookTier">Add Tier from Notebook...</button>
+    </div>
+
+  </div>
+
+
   <ul data-bind="template: { name: 'itemTmpl', foreach: $data.tiers }" id="treeview"
-      style="padding-left: 0px">
+      style="padding-left: 0px; position: absolute; bottom: 0; width: 450px;">
   </ul>
 
   <script id="itemTmpl" type="text/html">
-    <div style="background: black; padding: 3px"
+    <div style="padding: 3px"
          data-bind="style: { background: getColor(color) },
                     class: isSelected() ? 'selected' : '',
                     click: treeview_item_clicked">
@@ -37,24 +64,7 @@
     </div>
   </script>
 
-  <button onclick="refreshTiers()">
-    Refresh...
-  </button>
 
-  <div data-bind="visible: (demo_ih_model.tiers().length == 0)">
-    <button onclick="addBaseTier()">
-      Add Input Tier...
-    </button>
-  </div>
-
-  <div data-bind="visible: (demo_ih_model.tiers().length > 0)">
-    <button onclick="addJexlTier()">
-      Add JEXL Tier...
-    </button>
-
-    <!-- Trigger/Open The Modal -->
-    <button id="btnNewNotebookTier">New Tier from Notebook...</button>
-  </div>
 
 </div>
 

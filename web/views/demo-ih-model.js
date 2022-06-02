@@ -213,10 +213,12 @@ function refreshTiers(repeat = true) {
 
       demo_ih_model.tiers.removeAll()
 
+      newVM.tiers().reverse();
+
       for (tierIndex in newVM.tiers()) {
         tier = newVM.tiers()[tierIndex]
         // fractional color, converted to RGB inside the view.
-        tier.color = tierIndex / newVM.tiers().length;
+        tier.color = (newVM.tiers().length - 1 - tierIndex) / newVM.tiers().length;
         tier.isSelected = ko.observable(false);
         tier.tierIndex = ko.observable(parseInt(tierIndex));
         tier.sampleJSON = ko.observable("{}");
@@ -394,6 +396,10 @@ function removeTier() {
 
 function addBaseTier() {
   topic = window.prompt(`Choose input Kafka topic:`, "haste-input-data");
+  console.log(topic);
+  if (!topic) {
+    return;
+  }
   document.body.style.cursor = "wait";
   let xhr = new XMLHttpRequest();
   xhr.open('POST', '/api/add-base-tier/' + topic);
