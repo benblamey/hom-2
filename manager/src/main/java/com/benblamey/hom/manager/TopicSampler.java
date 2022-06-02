@@ -12,6 +12,7 @@ import java.io.*;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 public class TopicSampler {
 
@@ -51,7 +52,10 @@ public class TopicSampler {
     }
 
     public void exportSample(String topicID, String outputFilepath) throws InterruptedException, IOException {
-        groupId = "sampler-" + topicID;
+        // we delete the group ID, but for some reason it doesn't cleanly reset the offset.
+        // this is an issue when the base tier is re-added repeatedly.
+        // See: https://github.com/HASTE-project/hom-2/issues/17
+        groupId = "sampler-" + topicID +"-"+ (new Random().nextInt(999999));
 
         Properties props = new Properties();
         props.setProperty("bootstrap.servers", CommandLineArguments.getKafkaBootstrapServerConfig());
