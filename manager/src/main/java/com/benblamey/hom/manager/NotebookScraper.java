@@ -18,8 +18,8 @@ public class NotebookScraper {
                         "-ec",
                 // Unescaped:
                 // grep --extended-regexp --only-matching "^\s*\"\s*def ([^(])+\(" *.ipynb | sed -E "s/(.+):\s+\"def (.+)\(/\1,\2/"
-                }, new File(directory), null).stdOut;
                         "grep --extended-regexp --only-matching \"^\\s*\\\"def ([^(])+\\(\" *.ipynb | sed -E \"s/(.+):\\s+\\\"def (.+)\\(/\\1::\\2/\""
+                }, new File(directory), null, true).stdOut;
 
         return Arrays.stream(stdOut.split("\n")).toList();
     }

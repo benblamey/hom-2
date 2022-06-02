@@ -31,7 +31,7 @@ public abstract class Tier {
         sampler = new TopicSampler(outputTopic, sampleJsonlPath);
 
         try {
-            NotebooksFromTemplates.AnalyzeTierNotebookFromTemplate(sampleJsonlPath,
+            NotebooksFromTemplates.CreateAnalyzeTierNotebookFromTemplate(sampleJsonlPath,
                     "/data/analyze-tier-" + friendlyTierId + ".ipynb");
         } catch (IOException e) {
             throw new RuntimeException(e);

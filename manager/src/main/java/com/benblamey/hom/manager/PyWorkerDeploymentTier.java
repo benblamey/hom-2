@@ -124,6 +124,7 @@ public class PyWorkerDeploymentTier extends Tier {
                 "sh -c ./data/nb_worker_context.sh",
                 ";",
                 "python3",
+                "-u",
                 "-m",
                 "py_stream_worker",
                 CommandLineArguments.getKafkaBootstrapServerConfig(),
@@ -148,7 +149,7 @@ public class PyWorkerDeploymentTier extends Tier {
                         "apply",
                         "-f",
                         "-"
-                }, null, yaml);
+                }, null, yaml, true);
 
         Util.ProcessExecutionResult s2 = Util.executeShellLogAndBlock(
                 new String[]{

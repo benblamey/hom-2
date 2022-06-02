@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Offsets {
-    final static Logger logger = LoggerFactory.getLogger(Offsets.class);
+    private final static Logger logger = LoggerFactory.getLogger(Offsets.class);
 
     public static class OffsetInfo implements JSONAware {
         public OffsetInfo(List<String> parts) {
@@ -66,7 +66,7 @@ public class Offsets {
         String result;
         try {
             long before = System.currentTimeMillis() / 1000L;
-            result = Util.executeShellLogAndBlock(args).stdOut;
+            result = Util.executeShellLogAndBlock(args, null, null, false).stdOut;
             long after = System.currentTimeMillis() / 1000L;
             logger.info("kafka-consumer-groups.sh took " + (after - before) + " seconds.");
         } catch (IOException | InterruptedException e) {

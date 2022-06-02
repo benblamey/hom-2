@@ -156,6 +156,7 @@ spec:
     imagePullPolicy: Always
     name: manager
     command: ["java"]
+    # "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000",
     args: ["-cp","output.jar","-DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092","-DDATA_PATH=/data","com.benblamey.hom.manager.ManagerMainREST"]
     volumeMounts:
     - mountPath: /data

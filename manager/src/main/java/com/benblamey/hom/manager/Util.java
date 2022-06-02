@@ -10,12 +10,13 @@ import static org.apache.logging.log4j.core.util.Loader.getClassLoader;
 
 public class Util {
     static ProcessExecutionResult executeShellLogAndBlock(String[] args) throws IOException, InterruptedException {
-        return executeShellLogAndBlock(args, null, null);
+        return executeShellLogAndBlock(args, null, null, true);
     }
 
     static ProcessExecutionResult executeShellLogAndBlock(String[] args,
                                           File workingDir,
-                                          String stdin) throws IOException, InterruptedException {
+                                          String stdin,
+                                                          Boolean printStdOut ) throws IOException, InterruptedException {
         String cmdAndArgs = String.join(" ", args);
         System.out.println("Executing " + cmdAndArgs);
         System.out.flush();
@@ -52,7 +53,9 @@ public class Util {
         int exitCode = cmdProc.exitValue();
         System.out.println("Process exited with code: " + exitCode);
 
-        System.out.println(stdOut);
+        if (printStdOut) {
+            System.out.println(stdOut);
+        }
         System.out.flush();
 
         ProcessExecutionResult result = new ProcessExecutionResult();
