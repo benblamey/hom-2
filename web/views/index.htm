@@ -84,7 +84,7 @@
     <div class='minor_tier_info' data-bind="text:'Input Topic: ' + inputTopic()"></div>
     <div class='minor_tier_info' data-bind="text:'Output Topic: ' + outputTopic()"></div>
 
-    <div data-bind="if: ((tierIndex() + 1) == demo_ih_model.tiers().length)"
+    <div data-bind="if: (tierIndex() == 0)"
          style="margin-top: 20px">
       <button onclick="removeTier()">
         Remove this Tier
