@@ -3,6 +3,8 @@
 #  localhost:80 (for the HTTP services)
 # See: https://www.ibm.com/support/pages/what-are-ssh-tunnels-and-how-use-them
 
+set +x
+
 sudo apt update ; sudo apt upgrade ; sudo snap install microk8s --classic ; sudo microk8s enable dns ingress
 
 # Access the Kubernetes admin dashboard (this keeps running so recommended open in a new session, or use &). Binds to https://127.0.0.1:10443
