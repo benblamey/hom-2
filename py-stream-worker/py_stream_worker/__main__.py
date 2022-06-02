@@ -6,6 +6,8 @@ import importlib.util
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+logger = logging.getLogger('hom')
+
 
 # python3 -m py_stream_worker kafka-service:9092 haste-input-data output-topic-foo groupidfoo example.py hej
 
@@ -18,8 +20,8 @@ group_id = sys.argv[4]
 python_filepath = sys.argv[5]  # some-guid.py
 python_function = sys.argv[6]  # bar
 
-logging.info("Command line arguments:")
-logging.info({
+logger.info("Command line arguments:")
+logger.info({
     'kakfa_bootstrap_server': kakfa_bootstrap_server,
     'input_topic': input_topic,
     'output_topic': output_topic,
@@ -29,16 +31,16 @@ logging.info({
 })
 
 
-logging.info('spec_from_file...')
+logger.debug('spec_from_file...')
 import_spec = importlib.util.spec_from_file_location("my_notebook", python_filepath)
-logging.info('module_from_spec...')
+logger.debug('module_from_spec...')
 imported_module = importlib.util.module_from_spec(import_spec)
 
-logging.info('executing users module...')
+logger.info('executing users module...')
 loaded_module = import_spec.loader.exec_module(imported_module)
-logging.info('...module loaded')
+logger.debug('...module loaded')
 users_function = getattr(imported_module, python_function)
-logging.info('done')
+logger.info('done')
 
 # result = users_function({"foo": 1})
 # print(result)
@@ -54,32 +56,32 @@ consumer = KafkaConsumer(input_topic,
                          max_poll_interval_ms=20*60*1000,
                          auto_offset_reset='earliest')
 producer = KafkaProducer(bootstrap_servers=kakfa_bootstrap_server)
-logging.info('Kafka producer and consumer have been initialized.')
+logger.info('Kafka producer and consumer have been initialized.')
 # TODO: have one thread listen for shutdown, and exit gracefully.
 
 
 for msg in consumer:
     if not read_a_message:
-        logging.info("successfully read a message from Kafka.")
+        logger.info("successfully read a message from Kafka.")
         read_a_message = True
 
     input_dict = json.loads(msg.value)
 
-    logging.info(f'input dictionary is: {input_dict}')
+    logger.info(f'input dictionary is: {input_dict}')
 
     output_dict = users_function(input_dict)
 
-    logging.info(f'output dictionary is: {output_dict}')
+    logger.info(f'output dictionary is: {output_dict}')
 
     if not output_dict:
-        logging.debug('Returned object is falsy so will not be written to next tier.')
+        logger.debug('Returned object is falsy so will not be written to next tier.')
         continue
 
     if 'accept' in output_dict:
-        logging.debug(" 'accept' key detected. Use of this field is deprecated. It is preferred simply to return a falsy value, like None, to exclude an object.")
+        logger.debug(" 'accept' key detected. Use of this field is deprecated. It is preferred simply to return a falsy value, like None, to exclude an object.")
         accept = output_dict.pop("accept", None)
         if not accept:
-            logging.debug("skipping object because 'accept' was truthy.")
+            logger.debug("skipping object because 'accept' was truthy.")
             continue
 
     key = msg.key  # needs to be bytes
@@ -103,13 +105,13 @@ for msg in consumer:
 #      ...     producer.send('foobar', b'some_message_bytes')
 
 
-# logging.debug("opening notebookfile...")
+# logger.debug("opening notebookfile...")
 # with open("/data/" + python_filename) as f:
-#     logging.debug("calling nbformat.read...")
+#     logger.debug("calling nbformat.read...")
 #     nb = nbformat.read(f, as_version=4)
-#     logging.debug("calling ExecutePreprocessor...")
+#     logger.debug("calling ExecutePreprocessor...")
 #     ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
-#     logging.debug("calling ep.preprocess...")
+#     logger.debug("calling ep.preprocess...")
 #     out = ep.preprocess(nb, {'metadata': {'path': '/data'}})
 # print(out)
 # print(hej({"foo": 2}))
