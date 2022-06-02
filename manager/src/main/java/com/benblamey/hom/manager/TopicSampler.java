@@ -55,7 +55,7 @@ public class TopicSampler {
 
         Properties props = new Properties();
         props.setProperty("bootstrap.servers", CommandLineArguments.getKafkaBootstrapServerConfig());
-        props.setProperty("group.id", "sampler");
+        props.setProperty("group.id", groupId);
         props.setProperty("enable.auto.commit", "false");
         props.setProperty("auto.offset.reset", "earliest");
         props.put("key.deserializer", LongDeserializer.class.getName());
@@ -86,6 +86,7 @@ public class TopicSampler {
                     // Newlines within strings are always escaped in JSON, per spec.
                     String jsonOneLine = msgJson.replace("\n", "") + "\n";
                     bufferedWriter.append(jsonOneLine);
+                    bufferedWriter.flush();
                     count++;
                     if (count == RECORD_COUNT) {
                         break;

@@ -28,21 +28,17 @@ logging.info({
     'python_function': python_function,
 })
 
-read_a_message = False
-consumer = KafkaConsumer(input_topic,
-                         bootstrap_servers=kakfa_bootstrap_server,
-                         group_id=group_id,
-                         auto_offset_reset='earliest')
-producer = KafkaProducer(bootstrap_servers=kakfa_bootstrap_server)
 
-# TODO: have one thread listen for shutdown, and exit gracefully.
-
-print('started.')
-
+logging.info('spec_from_file...')
 import_spec = importlib.util.spec_from_file_location("my_notebook", python_filepath)
+logging.info('module_from_spec...')
 imported_module = importlib.util.module_from_spec(import_spec)
+
+logging.info('executing users module...')
 loaded_module = import_spec.loader.exec_module(imported_module)
+logging.info('...module loaded')
 users_function = getattr(imported_module, python_function)
+logging.info('done')
 
 # result = users_function({"foo": 1})
 # print(result)
@@ -50,6 +46,16 @@ users_function = getattr(imported_module, python_function)
 # accept = result['accept']
 # del result['accept']
 # print(result)
+
+read_a_message = False
+consumer = KafkaConsumer(input_topic,
+                         bootstrap_servers=kakfa_bootstrap_server,
+                         group_id=group_id,
+                         max_poll_interval_ms=20*60*1000,
+                         auto_offset_reset='earliest')
+producer = KafkaProducer(bootstrap_servers=kakfa_bootstrap_server)
+logging.info('Kafka producer and consumer have been initialized.')
+# TODO: have one thread listen for shutdown, and exit gracefully.
 
 
 for msg in consumer:

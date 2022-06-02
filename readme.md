@@ -26,7 +26,6 @@ sudo apt -y install git ; git clone https://github.com/HASTE-project/hom-2.git
 
 sudo microk8s kubectl create namespace hom ; sudo microk8s kubectl config set-context --current --namespace=hom
 
-
 # modify the persistent volume to match the current machine (check the host and path)
 # The lines are near the top:
 head -n 50 hom-2/kubernetes/k8.yaml
