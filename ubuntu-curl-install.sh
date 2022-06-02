@@ -3,9 +3,8 @@
 #  localhost:80 (for the HTTP services)
 # See: https://www.ibm.com/support/pages/what-are-ssh-tunnels-and-how-use-them
 
-set +x
 
-sudo apt update ; sudo apt upgrade ; sudo snap install microk8s --classic ; sudo microk8s enable dns ingress
+sudo apt update ; sudo apt upgrade ; sudo snap install microk8s --classic ; sudo microk8s enable dns ingress rbac
 
 # Access the Kubernetes admin dashboard (this keeps running so recommended open in a new session, or use &). Binds to https://127.0.0.1:10443
 sudo microk8s dashboard-proxy &
@@ -27,3 +26,5 @@ sudo microk8s kubectl get all --all-namespaces
 
 # port forward the web ingress to localhost (in the background)
 sudo microk8s kubectl port-forward --namespace=ingress daemonset.apps/nginx-ingress-microk8s-controller 80:80 &
+
+echo Ready!
