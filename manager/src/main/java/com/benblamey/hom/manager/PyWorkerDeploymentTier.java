@@ -105,7 +105,7 @@ public class PyWorkerDeploymentTier extends Tier {
                         "--output",
                         scriptFileNameAndExtension,
                         "--output-dir=/data/" + PYWORKER_SCRIPT_DIR,
-                        "--execute", // execute prior to export
+                        //"--execute", // execute prior to export
                         "--to",
                         "python"
                 });
