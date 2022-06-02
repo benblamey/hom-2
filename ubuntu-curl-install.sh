@@ -27,4 +27,4 @@ sudo microk8s kubectl get all --all-namespaces
 # port forward the web ingress to localhost (in the background)
 sudo microk8s kubectl port-forward --namespace=ingress daemonset.apps/nginx-ingress-microk8s-controller 80:80 &
 
-echo Ready!
+echo -- HOM is Ready! --

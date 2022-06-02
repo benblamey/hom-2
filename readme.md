@@ -7,7 +7,7 @@ Part of the HASTE Project. [http://haste.research.it.uu.se/]()
 
 ## DEPLOYMENT INSTRUCTIONS FOR UBUNTU (21.04)
 
-0. Connect to the server forwarding ports to these ports on the server:
+0. Connect to a fresh VM, forwarding ports to these ports on the server:
   localhost:10443 (for the microK8s dash)
   localhost:80 (for the HTTP services)
 See: [https://www.ibm.com/support/pages/what-are-ssh-tunnels-and-how-use-them]()
