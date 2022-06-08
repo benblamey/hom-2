@@ -16,8 +16,9 @@ sudo microk8s kubectl create namespace hom ; sudo microk8s kubectl config set-co
 # modify the persistent volume to match the current machine (check the host and path)
 
 # or attempt this with sed..
-sed -i s/hom-2-benblamey/$(hostname)/ hom-2/kubernetes/k8.yaml
-sed -i s+/home/ubuntu/mnt+$(pwd)+ hom-2/kubernetes/k8.yaml
+sed -i s/hom-2-benblamey/$(hostname)/ hom-2/kubernetes/storage.yaml
+sed -i s+/home/ubuntu/mnt+$(pwd)+ hom-2/kubernetes/storage.yaml
+sudo microk8s kubectl apply -f hom-2/kubernetes/storage.yaml
 
 sudo microk8s kubectl apply -f hom-2/kubernetes/k8.yaml
 

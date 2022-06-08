@@ -1,0 +1,58 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: manual
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hom-pv
+  namespace: hom
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteMany
+  storageClassName: "manual"
+  persistentVolumeReclaimPolicy: Retain
+  local:
+  # Bens macbook pro like this:
+    path: /Users/benblamey/projects/2021.hom-impl-2/persistentvolume
+  # Server like this:
+    #path: /home/ubuntu/mnt/hom-2/persistentvolume
+# NFS like this:
+#  nfs:
+#    server: 192.168.0.5
+#    path: /opt/foo
+#  mountOptions:
+# MacOSX uses NFS3.
+#        - nfsvers=3
+
+# Use this for docker desktop
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+#           - hom-2-benblamey
+          - docker-desktop
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hom-pv-claim
+  namespace: hom
+spec:
+  accessModes:
+    - ReadWriteMany
+  # This is the key used to match the PV:
+  storageClassName: "manual"
+  resources:
+    requests:
+      storage: 1Gi
