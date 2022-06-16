@@ -17,11 +17,15 @@ See: [https://www.ibm.com/support/pages/what-are-ssh-tunnels-and-how-use-them]()
 source <(curl -s https://raw.githubusercontent.com/HASTE-project/hom-2/main/ubuntu-curl-install.sh)
 ```
 
+The token used to access the dashboard is printed in the console.
+
 2. Assuming port forwarding is setup correctly, you can now access (don't forget the trailing slash):
 
-[http://localhost/gui/]() (the GUI)
+[http://localhost/gui/](http://localhost/gui/) (the GUI)
 
-[http://localhost/notebook/]() (Jupyter) 
+[http://localhost/notebook/](http://localhost/notebook/) (Jupyter) 
+
+[http://localhost:10443/](http://localhost:10443/) (the K8s dashboard)
 
 The password is `hej-hom-impl-foo` (Note that access to all the web services, including the notebook, is protected by the SSH login)
 
