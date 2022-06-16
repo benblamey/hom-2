@@ -20,19 +20,17 @@ spec:
   storageClassName: "manual"
   persistentVolumeReclaimPolicy: Retain
   local:
-  # Bens macbook pro like this:
-    path: /Users/benblamey/projects/2021.hom-impl-2/persistentvolume
-  # Server like this:
-    #path: /home/ubuntu/mnt/hom-2/persistentvolume
-# NFS like this:
-#  nfs:
-#    server: 192.168.0.5
-#    path: /opt/foo
-#  mountOptions:
-# MacOSX uses NFS3.
-#        - nfsvers=3
-
-# Use this for docker desktop
+    # Bens macbook pro like this:
+    # path: /Users/benblamey/projects/2021.hom-impl-2/persistentvolume
+    # Server like this:
+    path: /home/ubuntu/mnt/hom-2/persistentvolume
+    # NFS like this:
+    #  nfs:
+    #    server: 192.168.0.5
+    #    path: /opt/foo
+    #  mountOptions:
+    # MacOSX uses NFS3.
+    #        - nfsvers=3
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -40,8 +38,9 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-#           - hom-2-benblamey
-          - docker-desktop
+            - hom-2-benblamey
+            # Use this for docker desktop
+            #- docker-desktop
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
