@@ -42,7 +42,7 @@ sudo microk8s kubectl get all --all-namespaces
 
 # port forward the web ingress to localhost (in the background):
 # For for ubuntu+microK8s:
-sudo microk8s kubectl port-forward --namespace=ingress daemonset.apps/nginx-ingress-microk8s-controller 80:80
+sudo microk8s kubectl port-forward --namespace=ingress daemonset.apps/nginx-ingress-microk8s-controller 80:80 &
 # For Docker on a Mac:
 # sudo kubectl port-forward --namespace=ingress-nginx service/ingress-nginx-controller 80:80
 # For something else ?!:
