@@ -1,15 +1,19 @@
 # See:  https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md#admin-privileges
 
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
 kind: ClusterRoleBinding
 metadata:
-  name: kubernetes-dashboard
-  namespace: kubernetes-dashboard
+  name: admin-user
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cluster-admin
 subjects:
-  - kind: ServiceAccount
-    name: kubernetes-dashboard
-    namespace: kubernetes-dashboard
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
