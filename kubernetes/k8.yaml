@@ -274,7 +274,7 @@ spec:
   # https://stackoverflow.com/questions/54506269/simple-ingress-from-host-with-microk8s
   # For mikrok8s, set it 'public'.
   # For docker desktop, set it 'nginx'.
-  ingressClassName: nginx
+  ingressClassName: public
   rules:
   - host: "localhost"
     http:
