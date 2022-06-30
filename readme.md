@@ -41,8 +41,6 @@ aRPM-tgpFtHYAtgT8rk4q3dPbTRtJM5MPnsyaog96m6jTe8FX-e19Ad-OkVoJgdOWzN73iV9VI0WbrtY
 [http://localhost/gui/](http://localhost/gui/) (the GUI)
 
 [http://localhost/notebook/](http://localhost/notebook/) (Jupyter) 
-
-
 The password is `hej-hom-impl-foo` (Note that access to all the web services, including the notebook, is protected by the SSH login)
 
 3. (re)Start the demo application can restart/begin streaming data:
@@ -57,5 +55,6 @@ sudo microk8s kubectl delete pod demo-data ; sudo microk8s kubectl run demo-data
 
 
 Contributors: 
-Ben Blamey [http://www.benblamey.com](http://www.benblamey.com)
-Bipin Patel [https://github.com/BipinPatel](https://github.com/BipinPatel)
+* Ben Blamey [http://www.benblamey.com](http://www.benblamey.com)
+* Bipin Patel [https://github.com/BipinPatel](https://github.com/BipinPatel)
+* Haoyuan Li [https://github.com/Haoyuan-L](https://github.com/Haoyuan-L)

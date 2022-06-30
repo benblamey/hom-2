@@ -7,7 +7,7 @@
 
 sudo apt update -y ; sudo apt upgrade -y ; sudo snap install microk8s --classic --channel=1.24/stable ; sudo microk8s enable dns ingress rbac
 
-sudo apt -y install git ; git clone https://github.com/HASTE-project/hom-2.git
+sudo apt -y install git ; git clone --depth 1 https://github.com/HASTE-project/hom-2.git
 
 # Deploy the dashboard
 # https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
