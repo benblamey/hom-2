@@ -50,7 +50,7 @@ The password is `hej-hom-impl-foo` (Note that access to all the web services, in
 sudo microk8s kubectl delete pod demo-data ; sudo microk8s kubectl run demo-data --image benblamey/hom-impl-2.stream-worker2 --attach='true' --stdin --command --image-pull-policy='Always' --restart=Always -- java -cp output.jar -Droot.log.level=DEBUG -Dcom.benblamey.hom.demodata.DemoDataProducer.log.level=DEBUG -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -DKAFKA_BOOTSTRAP_SERVER=kafka-service:9092 com.benblamey.hom.demodata.DemoDataMain
 ```
 
-4. Go into [http://localhost/gui/](the GUI) and add an input tier for `haste-input-data`.
+4. Go into [the GUI](http://localhost/gui/) and add an input tier for `haste-input-data`.
 
 5. Go into Jupyter and run tier-0 notebook to analyze the sample tier, following the video tutorial.
 
