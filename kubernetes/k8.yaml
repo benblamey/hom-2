@@ -207,13 +207,13 @@ spec:
 #        - name: SPRING_SECURITY_USER_PASSWORD
 #          value: "hejhaste"
         imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "1024Mi"
-            cpu: "1000m"
+#        resources:
+#          requests:
+#            memory: "256Mi"
+#            cpu: "100m"
+#          limits:
+#            memory: "1024Mi"
+#            cpu: "1000m"
         ports:
         - name: http
           containerPort: 80
