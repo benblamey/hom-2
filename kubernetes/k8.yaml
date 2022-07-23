@@ -183,13 +183,19 @@ spec:
         app: kafka-ui
     spec:
       containers:
+      # See: https://github.com/provectus/kafka-ui
       - name: kafka-ui
-        image: haoyuan9654/haste-kafka-ui:latest
+        image: provectuslabs/kafka-ui:latest
         env:
+        # See: https://github.com/provectus/kafka-ui#env_variables
+        - name: LOGGING_LEVEL_ROOT
+          value: debug
         - name: SERVER_PORT
-          value: "8088"
+          value: "80"
+        - name: SERVER_SERVLET_CONTEXT_PATH
+          value: /kafka-gui
         - name: KAFKA_CLUSTERS_0_NAME
-          value: "microk8s-cluster"
+          value: microk8s-cluster
         - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
           value: kafka-service:9092
         - name: KAFKA_CLUSTERS_0_ZOOKEEPER
@@ -210,7 +216,7 @@ spec:
             cpu: "1000m"
         ports:
         - name: http
-          containerPort: 8088
+          containerPort: 80
           protocol: TCP
 
 ---
@@ -319,7 +325,7 @@ spec:
     - name: kafka-ui
       protocol: TCP
       port: 80
-      targetPort: 8088
+      targetPort: 80
 #      nodePort: 31006
 ---
 
@@ -364,7 +370,7 @@ spec:
             name: notebook-service
             port:
               number: 80
-      - path: /kafka-gui/(.*)
+      - path: /(kafka-gui/(.*))
         pathType: Prefix
         backend:
           service:
