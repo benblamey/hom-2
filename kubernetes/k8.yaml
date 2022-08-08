@@ -190,8 +190,9 @@ spec:
         # See: https://github.com/provectus/kafka-ui#env_variables
         - name: LOGGING_LEVEL_ROOT
           value: debug
-        - name: SERVER_PORT
-          value: "80"
+# Get an error "Web server failed to start. Port 80 was already in use."
+#        - name: SERVER_PORT
+#          value: "80"
         - name: SERVER_SERVLET_CONTEXT_PATH
           value: /kafka-gui
         - name: KAFKA_CLUSTERS_0_NAME
@@ -216,7 +217,7 @@ spec:
 #            cpu: "1000m"
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 8080
           protocol: TCP
 
 ---
@@ -376,5 +377,5 @@ spec:
           service:
             name: kafka-ui-service
             port:
-              number: 80
+              number: 8080
 
